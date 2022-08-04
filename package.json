@@ -1,4 +1,7 @@
 {
+  "name": "hooktron",
+  "productName": "Hooktron",
+  "version": "0.1.0",
   "description": "Electron-based web automation tool",
   "keywords": [
     "electron",
