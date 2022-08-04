@@ -7,7 +7,7 @@ import './MainPage.css';
 export default function () {
   return (
     <FullPage>
-      <Split className="split" gutterSize={5} sizes={[70, 30]}>
+      <Split className="split" gutterSize={4} sizes={[70, 30]}>
         <WebBrowser></WebBrowser>
         <HookEditor></HookEditor>
       </Split>
