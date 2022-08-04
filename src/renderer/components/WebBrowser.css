@@ -10,3 +10,7 @@
   display: flex;
   flex-direction: column;
 }
+
+.ant-tabs-top > .ant-tabs-nav {
+  margin: 0 0 0 0 !important;
+}
