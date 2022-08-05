@@ -7,7 +7,7 @@ export default function () {
     <webview
       ref={webviewRef}
       src="https://www.github.com/"
-      preload={`file://${window.electron.getWebviewPreloadPath()}`}
+      preload={`file://${window._codingbrowser.getWebviewPreloadPath()}`}
       style={{
         display: 'inline-flex',
         width: '100%',

@@ -3,7 +3,7 @@ import path from 'path';
 
 export type Channels = 'ipc-example';
 
-contextBridge.exposeInMainWorld('electron', {
+contextBridge.exposeInMainWorld('_codingbrowser', {
   getWebviewPreloadPath: () => {
     return path.join(__dirname, 'wvpreload.js');
   },
