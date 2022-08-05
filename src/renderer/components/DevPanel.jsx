@@ -8,17 +8,22 @@ import {
   HStack,
   Spacer,
 } from '@chakra-ui/react';
-import CodeEditor from './CodeEditor';
+import CodePane from './CodePane';
+import NetworkPane from './NetworkPane';
 
 export default function () {
   return (
     <Tabs size="sm">
       <TabList overflowX="auto">
         <Tab>Code</Tab>
+        <Tab>Network</Tab>
       </TabList>
       <TabPanels>
-        <TabPanel>
-          <CodeEditor />
+        <TabPanel p={0}>
+          <CodePane />
+        </TabPanel>
+        <TabPanel p={0}>
+          <NetworkPane />
         </TabPanel>
       </TabPanels>
     </Tabs>
