@@ -57,14 +57,14 @@ export default class MenuBuilder {
       label: 'Electron',
       submenu: [
         {
-          label: 'About Hooktron',
+          label: 'About jsPush',
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
         { label: 'Services', submenu: [] },
         { type: 'separator' },
         {
-          label: 'Hide Hooktron',
+          label: 'Hide jsPush',
           accelerator: 'Command+H',
           selector: 'hide:',
         },

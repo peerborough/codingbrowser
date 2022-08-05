@@ -1,6 +1,6 @@
 {
-  "name": "hooktron",
-  "productName": "Hooktron",
+  "name": "jspush",
+  "productName": "jsPush",
   "version": "0.1.0",
   "description": "Electron-based web automation tool",
   "keywords": [
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/peerborough/hooktron.git"
+    "url": "git+https://github.com/peerborough/jspush.git"
   },
   "license": "MIT",
   "author": {
@@ -173,8 +173,8 @@
     "webpack-merge": "^5.8.0"
   },
   "build": {
-    "productName": "Hooktron",
-    "appId": "com.peerborough.hooktron",
+    "productName": "jsPush",
+    "appId": "com.peerborough.jspush",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
@@ -233,7 +233,7 @@
     "publish": {
       "provider": "github",
       "owner": "peerborough",
-      "repo": "hooktron"
+      "repo": "jspush"
     }
   },
   "devEngines": {
