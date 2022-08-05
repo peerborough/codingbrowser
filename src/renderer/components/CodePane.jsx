@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   HStack,
   Select,
   IconButton,
@@ -8,13 +9,14 @@ import {
 } from '@chakra-ui/react';
 import { AiOutlinePlaySquare } from 'react-icons/ai';
 import { GrPlay } from 'react-icons/gr';
+import CodeEditor from './CodeEditor';
 
 export default function () {
   return (
-    <Box>
+    <Flex flex={1} flexDirection="column">
       <CodeEditorToolbar />
-      <Box>editor</Box>
-    </Box>
+      <CodeEditor />
+    </Flex>
   );
 }
 
@@ -27,7 +29,7 @@ function CodeEditorToolbar() {
         <option value="option3">OnDOMChange</option>
       </Select>
       <Spacer />
-      <Switch size="md" ari />
+      <Switch size="md" />
     </HStack>
   );
 }
