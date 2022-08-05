@@ -1,8 +1,13 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import path from 'path';
 
 export type Channels = 'ipc-example';
 
 contextBridge.exposeInMainWorld('electron', {
+  getWebviewPreloadPath: () => {
+    return path.join(__dirname, 'wvpreload.js');
+  },
+
   ipcRenderer: {
     sendMessage(channel: Channels, args: unknown[]) {
       ipcRenderer.send(channel, args);
