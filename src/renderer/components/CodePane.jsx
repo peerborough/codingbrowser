@@ -1,35 +1,47 @@
+import { useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Box,
   Flex,
   HStack,
   Select,
+  Icon,
   IconButton,
   Spacer,
   Switch,
 } from '@chakra-ui/react';
-import { AiOutlinePlaySquare } from 'react-icons/ai';
-import { GrPlay } from 'react-icons/gr';
+import { AiOutlinePlaySquare, AiFillSave } from 'react-icons/ai';
 import CodeEditor from './CodeEditor';
+import { setPreloadScript } from '../slices/editorSlice';
 
 export default function () {
+  const editorRef = useRef();
+  const dispatch = useDispatch();
+
+  const onSave = () => {
+    const value = editorRef.current?.getValue();
+    dispatch(setPreloadScript(value));
+  };
+
   return (
     <Flex flex={1} flexDirection="column">
-      <CodeEditorToolbar />
-      <CodeEditor />
+      <CodeEditorToolbar onSave={onSave} />
+      <CodeEditor ref={editorRef} />
     </Flex>
   );
 }
 
-function CodeEditorToolbar() {
+function CodeEditorToolbar({ onSave }) {
   return (
-    <HStack bg="blackAlpha.100" p={1} spacing={5}>
-      <Select placeholder="Add Event Handler" size="sm" bg="white">
-        <option value="option1">OnWillNavigate</option>
-        <option value="option2">OnDOMReady</option>
-        <option value="option3">OnDOMChange</option>
-      </Select>
+    <HStack p={0} spacing={5} mb={2}>
       <Spacer />
-      <Switch size="md" />
+      <IconButton
+        variant="ghost"
+        aria-label="Save"
+        size="sm"
+        icon={<Icon as={AiFillSave} w={6} h={6} color="teal" />}
+        onClick={onSave}
+      />
     </HStack>
   );
 }
