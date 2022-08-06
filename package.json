@@ -101,6 +101,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@monaco-editor/react": "^4.4.5",
+    "@reduxjs/toolkit": "^1.8.3",
     "antd": "^4.22.3",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.7",
@@ -110,6 +111,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
+    "react-redux": "^8.0.2",
     "react-router-dom": "^6.3.0",
     "react-split": "^2.0.14"
   },
