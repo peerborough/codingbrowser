@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   HStack,
   Box,
@@ -16,7 +17,10 @@ import {
   AiOutlineSearch,
 } from 'react-icons/ai';
 
-export default function () {
+export default function ({ onNavigate, onGoBack, onGoForward, onReload }) {
+  const [searchValue, setSearchValue] = useState('');
+  const handleSearchValueChange = (event) => setSearchValue(event.target.value);
+
   return (
     <HStack p="1" spacing="0">
       <IconButton
@@ -25,6 +29,7 @@ export default function () {
         colorScheme="gray"
         aria-label="Go back"
         icon={<AiOutlineArrowLeft />}
+        onClick={onGoBack}
       />
       <IconButton
         size="sm"
@@ -32,6 +37,7 @@ export default function () {
         colorScheme="gray"
         aria-label="Go forward"
         icon={<AiOutlineArrowRight />}
+        onClick={onGoForward}
       />
       <IconButton
         size="sm"
@@ -39,14 +45,34 @@ export default function () {
         colorScheme="gray"
         aria-label="Reload this page"
         icon={<AiOutlineReload />}
+        onClick={onReload}
       />
       <InputGroup size="sm">
         <InputLeftElement
           pointerEvents="none"
           children={<AiOutlineSearch color="grey" />}
         />
-        <Input variant="outline" placeholder="Search or enter web address" />
+        <Input
+          variant="outline"
+          placeholder="Search or enter web address"
+          value={searchValue}
+          onChange={handleSearchValueChange}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              if (onNavigate) onNavigate(getUrl(searchValue));
+            }
+          }}
+        />
       </InputGroup>
     </HStack>
   );
+}
+
+function getUrl(value) {
+  if (!value) return null;
+  const protocols = ['http://', 'https://', 'file://', 'app://'];
+  const isProtocol = protocols.find((protocol) => value.startsWith(protocol));
+  return isProtocol
+    ? value
+    : `https://www.google.com/search?q=${encodeURI(value)}`;
 }

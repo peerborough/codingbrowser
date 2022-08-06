@@ -1,14 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { Tabs, Button, Popconfirm, Space, Upload } from 'antd';
-import WebView from './WebView';
-import AddressBar from './AddressBar';
+import WebBrowser from './WebBrowser';
 import './BrowserPanel.css';
 
 const { TabPane } = Tabs;
 const initialPanes = [
   {
     title: 'Tab 1',
-    content: <WebView />,
+    content: <WebBrowser />,
     key: '1',
     closable: false,
   },
@@ -84,7 +83,6 @@ export default function () {
     >
       {panes.map((pane) => (
         <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
-          <AddressBar />
           {pane.content}
         </TabPane>
       ))}
