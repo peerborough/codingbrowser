@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Tabs, Button, Popconfirm, Space, Upload } from 'antd';
 import WebView from './WebView';
 import AddressBar from './AddressBar';
-import './WebBrowser.css';
+import './BrowserPanel.css';
 
 const { TabPane } = Tabs;
 const initialPanes = [
