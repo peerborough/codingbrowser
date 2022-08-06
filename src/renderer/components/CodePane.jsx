@@ -15,7 +15,7 @@ import CodeEditor from './CodeEditor';
 import { setPreloadScript } from '../slices/editorSlice';
 
 const defaultScript = `function onPageReady() {
-  // Write code when document in the given page is loaded
+  // Write code to be called when document in the given page is loaded
   
 }
 `;
