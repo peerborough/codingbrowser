@@ -17,7 +17,13 @@ import {
   AiOutlineSearch,
 } from 'react-icons/ai';
 
-export default function ({ onNavigate, onGoBack, onGoForward, onReload }) {
+export default function ({
+  iconState,
+  onNavigate,
+  onGoBack,
+  onGoForward,
+  onReload,
+}) {
   const [searchValue, setSearchValue] = useState('');
   const handleSearchValueChange = (event) => setSearchValue(event.target.value);
 
@@ -28,7 +34,11 @@ export default function ({ onNavigate, onGoBack, onGoForward, onReload }) {
         variant="ghost"
         colorScheme="gray"
         aria-label="Go back"
-        icon={<AiOutlineArrowLeft />}
+        icon={
+          <AiOutlineArrowLeft
+            color={iconState.canGoBack ? 'black' : 'lightgray'}
+          />
+        }
         onClick={onGoBack}
       />
       <IconButton
@@ -36,7 +46,12 @@ export default function ({ onNavigate, onGoBack, onGoForward, onReload }) {
         variant="ghost"
         colorScheme="gray"
         aria-label="Go forward"
-        icon={<AiOutlineArrowRight />}
+        icon={
+          <AiOutlineArrowRight
+            color={iconState.canGoForward ? 'black' : 'lightgray'}
+          />
+        }
+        cursor="pointer"
         onClick={onGoForward}
       />
       <IconButton
