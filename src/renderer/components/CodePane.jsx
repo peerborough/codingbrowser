@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   Flex,
@@ -14,19 +14,32 @@ import { AiOutlinePlaySquare, AiFillSave } from 'react-icons/ai';
 import CodeEditor from './CodeEditor';
 import { setPreloadScript } from '../slices/editorSlice';
 
+const defaultScript = `function onPageReady() {
+  // Write code when document in the given page is loaded
+  
+}
+`;
+
+const suffixScript = `
+window.addEventListener('DOMContentLoaded', (event) => {
+  if (onPageReady) onPageReady();
+});
+`;
+
 export default function () {
   const editorRef = useRef();
   const dispatch = useDispatch();
 
   const onSave = () => {
     const value = editorRef.current?.getValue();
-    dispatch(setPreloadScript(value));
+    const scriptValue = `${value};${suffixScript}`;
+    dispatch(setPreloadScript(scriptValue));
   };
 
   return (
     <Flex flex={1} flexDirection="column">
       <CodeEditorToolbar onSave={onSave} />
-      <CodeEditor ref={editorRef} />
+      <CodeEditor ref={editorRef} defaultScript={defaultScript} />
     </Flex>
   );
 }

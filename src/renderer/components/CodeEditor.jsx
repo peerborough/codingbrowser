@@ -1,7 +1,7 @@
 import { forwardRef, useRef, useImperativeHandle } from 'react';
 import Editor from '@monaco-editor/react';
 
-function CodeEditor({ defaultValue = '' }, ref) {
+function CodeEditor({ defaultScript }, ref) {
   const editorRef = useRef(null);
 
   useImperativeHandle(ref, () => ({
@@ -18,7 +18,7 @@ function CodeEditor({ defaultValue = '' }, ref) {
     <Editor
       height="100%"
       defaultLanguage="javascript"
-      defaultValue={defaultValue}
+      defaultValue={defaultScript}
       options={{ minimap: { enabled: false } }}
       onMount={handleEditorDidMount}
     />

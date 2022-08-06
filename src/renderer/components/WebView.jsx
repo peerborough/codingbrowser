@@ -1,7 +1,10 @@
 import { useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import store from '../store';
 
 export default function () {
   const webviewRef = useRef();
+  const jsValue = useSelector((state) => state.editor.preload.value);
 
   useEffect(() => {
     const onIpcMessage = ({ frameId, channel, args }) => {
@@ -15,7 +18,7 @@ export default function () {
     };
 
     const onDomReady = () => {
-      //      webviewRef.current.openDevTools();
+      webviewRef.current.openDevTools();
     };
 
     if (webviewRef.current) {
@@ -30,6 +33,12 @@ export default function () {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (jsValue) {
+      webviewRef.current?.reload();
+    }
+  }, [jsValue]);
 
   return (
     <webview
@@ -46,5 +55,8 @@ export default function () {
 }
 
 function onPreloadReady(webviewRef) {
-  webviewRef.current.send('execute-script', 'console.log("Injected");');
+  const jsValue = store.getState().editor.preload.value;
+  if (jsValue) {
+    webviewRef.current.send('execute-script', jsValue);
+  }
 }
