@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   HStack,
   Box,
@@ -18,14 +18,20 @@ import {
 } from 'react-icons/ai';
 
 export default function ({
+  searchValue,
   iconState,
   onNavigate,
   onGoBack,
   onGoForward,
   onReload,
 }) {
-  const [searchValue, setSearchValue] = useState('');
-  const handleSearchValueChange = (event) => setSearchValue(event.target.value);
+  const [_searchValue, _setSearchValue] = useState('');
+  const handleSearchValueChange = (event) =>
+    _setSearchValue(event.target.value);
+
+  useEffect(() => {
+    _setSearchValue(searchValue);
+  }, [searchValue]);
 
   return (
     <HStack p="1" spacing="0">
@@ -70,11 +76,11 @@ export default function ({
         <Input
           variant="outline"
           placeholder="Search or enter web address"
-          value={searchValue}
+          value={_searchValue}
           onChange={handleSearchValueChange}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
-              if (onNavigate) onNavigate(getUrl(searchValue));
+              if (onNavigate) onNavigate(getUrl(_searchValue));
             }
           }}
         />

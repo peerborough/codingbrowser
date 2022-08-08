@@ -2,7 +2,10 @@ import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 import store from '../store';
 
-function WebView({ url, onStateChanged, onTitleUpdated }, ref) {
+function WebView(
+  { url, onStateChanged, onSearchUpdated, onTitleUpdated },
+  ref
+) {
   const webviewRef = useRef();
   const jsValue = useSelector((state) => state.editor.preload.value);
 
@@ -38,6 +41,14 @@ function WebView({ url, onStateChanged, onTitleUpdated }, ref) {
       }
     };
 
+    const handleWillNavigate = ({ url }) => {
+      onSearchUpdated(url);
+    };
+
+    const handleStopLoading = () => {
+      onSearchUpdated(webviewRef.current.getURL());
+    };
+
     const handleDidStartNavigate = () => {
       onStateChanged({
         canGoBack: webviewRef.current.canGoBack(),
@@ -55,6 +66,13 @@ function WebView({ url, onStateChanged, onTitleUpdated }, ref) {
 
     if (webviewRef.current) {
       webviewRef.current.addEventListener('ipc-message', handleIpcMessage);
+      webviewRef.current.addEventListener('dom-ready', handleDomReady);
+      webviewRef.current.addEventListener('will-navigate', handleWillNavigate);
+      webviewRef.current.addEventListener(
+        'did-stop-loading',
+        handleStopLoading
+      );
+      webviewRef.current.addEventListener('did-finish-load', handleStopLoading);
       webviewRef.current.addEventListener(
         'did-start-navigation',
         handleDidStartNavigate
@@ -63,12 +81,24 @@ function WebView({ url, onStateChanged, onTitleUpdated }, ref) {
         'page-title-updated',
         handlePageTitleUpdated
       );
-      webviewRef.current.addEventListener('dom-ready', handleDomReady);
     }
 
     return () => {
       if (webviewRef.current) {
         webviewRef.current.removeEventListener('ipc-message', handleIpcMessage);
+        webviewRef.current.removeEventListener('dom-ready', handleDomReady);
+        webviewRef.current.removeEventListener(
+          'will-navigate',
+          handleWillNavigate
+        );
+        webviewRef.current.removeEventListener(
+          'did-stop-loading',
+          handleStopLoading
+        );
+        webviewRef.current.removeEventListener(
+          'did-finish-load',
+          handleStopLoading
+        );
         webviewRef.current.removeEventListener(
           'did-start-navigation',
           handleDidStartNavigate
@@ -77,7 +107,6 @@ function WebView({ url, onStateChanged, onTitleUpdated }, ref) {
           'page-title-updated',
           handlePageTitleUpdated
         );
-        webviewRef.current.removeEventListener('dom-ready', handleDomReady);
       }
     };
   }, []);

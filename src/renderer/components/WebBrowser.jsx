@@ -4,6 +4,8 @@ import WebView from './WebView';
 
 export default function ({ tabId, url, onTitleUpdated }) {
   const webviewRef = useRef();
+
+  const [searchValue, setSearchValue] = useState('');
   const [iconState, setIconState] = useState({
     canGoBack: false,
     canGoForward: false,
@@ -13,6 +15,9 @@ export default function ({ tabId, url, onTitleUpdated }) {
   const handleGoBack = () => webviewRef.current?.goBack();
   const handleGoForward = () => webviewRef.current?.goForward();
   const handleReload = () => webviewRef.current?.reload();
+  const handleSearchValueUpdated = (value) => {
+    setSearchValue(value);
+  };
   const handleTitleUpdate = (title) =>
     onTitleUpdated && onTitleUpdated(tabId, title);
 
@@ -23,6 +28,7 @@ export default function ({ tabId, url, onTitleUpdated }) {
   return (
     <>
       <AddressBar
+        searchValue={searchValue}
         iconState={iconState}
         onNavigate={handleNavigation}
         onGoBack={handleGoBack}
@@ -33,6 +39,7 @@ export default function ({ tabId, url, onTitleUpdated }) {
         ref={webviewRef}
         url={url}
         onStateChanged={refreshAddressBar}
+        onSearchUpdated={handleSearchValueUpdated}
         onTitleUpdated={handleTitleUpdate}
       />
     </>
