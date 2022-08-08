@@ -66,6 +66,19 @@ export default function () {
     setActiveKey(newActiveKey);
   };
 
+  const updateTitle = (tabId, title) => {
+    console.log(tabId, title);
+    setPanes((value) => {
+      return value.map((tab) => {
+        if (tab.key === tabId) {
+          return { ...tab, title };
+        } else {
+          return tab;
+        }
+      });
+    });
+  };
+
   const onEdit = (targetKey, action) => {
     if (action === 'add') {
       add();
@@ -83,7 +96,7 @@ export default function () {
     >
       {panes.map((pane) => (
         <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
-          {pane.content}
+          <WebBrowser tabId={pane.key} onTitleUpdated={updateTitle} />
         </TabPane>
       ))}
     </Tabs>

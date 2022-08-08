@@ -2,7 +2,7 @@ import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 import store from '../store';
 
-function WebView({ onStateChanged }, ref) {
+function WebView({ onStateChanged, onTitleUpdated }, ref) {
   const webviewRef = useRef();
   const jsValue = useSelector((state) => state.editor.preload.value);
 
@@ -45,27 +45,39 @@ function WebView({ onStateChanged }, ref) {
       });
     };
 
+    const handlePageTitleUpdated = ({ title }) => {
+      onTitleUpdated(title);
+    };
+
     const handleDomReady = () => {
       //webviewRef.current.openDevTools();
     };
 
     if (webviewRef.current) {
       webviewRef.current.addEventListener('ipc-message', handleIpcMessage);
-      webviewRef.current.addEventListener('dom-ready', handleDomReady);
       webviewRef.current.addEventListener(
         'did-start-navigation',
         handleDidStartNavigate
       );
+      webviewRef.current.addEventListener(
+        'page-title-updated',
+        handlePageTitleUpdated
+      );
+      webviewRef.current.addEventListener('dom-ready', handleDomReady);
     }
 
     return () => {
       if (webviewRef.current) {
         webviewRef.current.removeEventListener('ipc-message', handleIpcMessage);
-        webviewRef.current.removeEventListener('dom-ready', handleDomReady);
         webviewRef.current.removeEventListener(
           'did-start-navigation',
           handleDidStartNavigate
         );
+        webviewRef.current.removeEventListener(
+          'page-title-updated',
+          handlePageTitleUpdated
+        );
+        webviewRef.current.removeEventListener('dom-ready', handleDomReady);
       }
     };
   }, []);
