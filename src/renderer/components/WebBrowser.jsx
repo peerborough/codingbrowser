@@ -13,7 +13,8 @@ export default function ({ tabId, onTitleUpdated }) {
   const handleGoBack = () => webviewRef.current?.goBack();
   const handleGoForward = () => webviewRef.current?.goForward();
   const handleReload = () => webviewRef.current?.reload();
-  const handleTitleUpdate = (title) => onTitleUpdated(tabId, title);
+  const handleTitleUpdate = (title) =>
+    onTitleUpdated && onTitleUpdated(tabId, title);
 
   const refreshAddressBar = ({ canGoBack, canGoForward }) => {
     setIconState({ canGoBack, canGoForward });
