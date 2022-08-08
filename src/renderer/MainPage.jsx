@@ -1,16 +1,16 @@
-import Split from 'react-split';
+import { Allotment } from 'allotment';
 import FullPage from './components/FullPage';
 import BrowserPanel from './components/BrowserPanel';
 import DevPanel from './components/DevPanel';
-import './MainPage.css';
+import 'allotment/dist/style.css';
 
 export default function () {
   return (
     <FullPage>
-      <Split className="split" gutterSize={1} sizes={[60, 40]}>
+      <Allotment>
         <BrowserPanel></BrowserPanel>
         <DevPanel></DevPanel>
-      </Split>
+      </Allotment>
     </FullPage>
   );
 }

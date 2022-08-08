@@ -2,7 +2,6 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Provider } from 'react-redux';
 import MainPage from './MainPage';
-import 'antd/dist/antd.css';
 import store from './store';
 import './App.css';
 import * as monaco from 'monaco-editor';

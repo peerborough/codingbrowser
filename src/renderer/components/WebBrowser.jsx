@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import AddressBar from './AddressBar';
 import WebView from './WebView';
 
-export default function ({ tabId, onTitleUpdated }) {
+export default function ({ tabId, url, onTitleUpdated }) {
   const webviewRef = useRef();
   const [iconState, setIconState] = useState({
     canGoBack: false,
@@ -31,6 +31,7 @@ export default function ({ tabId, onTitleUpdated }) {
       />
       <WebView
         ref={webviewRef}
+        url={url}
         onStateChanged={refreshAddressBar}
         onTitleUpdated={handleTitleUpdate}
       />

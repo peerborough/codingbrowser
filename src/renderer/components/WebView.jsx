@@ -2,7 +2,7 @@ import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 import store from '../store';
 
-function WebView({ onStateChanged, onTitleUpdated }, ref) {
+function WebView({ url, onStateChanged, onTitleUpdated }, ref) {
   const webviewRef = useRef();
   const jsValue = useSelector((state) => state.editor.preload.value);
 
@@ -91,7 +91,7 @@ function WebView({ onStateChanged, onTitleUpdated }, ref) {
   return (
     <webview
       ref={webviewRef}
-      src="https://www.github.com/"
+      src={url}
       preload={`file://${window._codingbrowser.getWebviewPreloadPath()}`}
       style={{
         display: 'inline-flex',
