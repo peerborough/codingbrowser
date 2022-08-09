@@ -92,9 +92,27 @@ export default function ({
 
 function getUrl(value) {
   if (!value) return null;
+
+  // url
   const protocols = ['http://', 'https://', 'file://', 'app://'];
   const isProtocol = protocols.find((protocol) => value.startsWith(protocol));
-  return isProtocol
-    ? value
-    : `https://www.google.com/search?q=${encodeURI(value)}`;
+  if (isProtocol) {
+    return `https://www.google.com/search?q=${encodeURI(value)}`;
+  }
+
+  // domain name
+  const domainPattern = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
+  if (domainPattern.test(value)) {
+    return `http://${value}`;
+  }
+
+  // ip address
+  const ipv4Pattern =
+    /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  if (ipv4Pattern.test(value)) {
+    return `http://${value}`;
+  }
+
+  // Search keyword
+  return `https://www.google.com/search?q=${encodeURI(value)}`;
 }
