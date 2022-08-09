@@ -56,6 +56,8 @@ function WebView({ defaultURL, onStateChanged, onAddTab, onUpdateTabs }, ref) {
       onUpdateTabs({ url });
     };
 
+    const handleStartLoading = () => {};
+
     const handleStopLoading = () => {
       onUpdateTabs({ url: webviewRef.current.getURL() });
     };
@@ -80,6 +82,10 @@ function WebView({ defaultURL, onStateChanged, onAddTab, onUpdateTabs }, ref) {
       webviewRef.current.addEventListener('dom-ready', handleDomReady);
       webviewRef.current.addEventListener('will-navigate', handleWillNavigate);
       webviewRef.current.addEventListener(
+        'did-start-loading',
+        handleStartLoading
+      );
+      webviewRef.current.addEventListener(
         'did-stop-loading',
         handleStopLoading
       );
@@ -101,6 +107,10 @@ function WebView({ defaultURL, onStateChanged, onAddTab, onUpdateTabs }, ref) {
         webviewRef.current.removeEventListener(
           'will-navigate',
           handleWillNavigate
+        );
+        webviewRef.current.removeEventListener(
+          'did-start-loading',
+          handleStartLoading
         );
         webviewRef.current.removeEventListener(
           'did-stop-loading',
