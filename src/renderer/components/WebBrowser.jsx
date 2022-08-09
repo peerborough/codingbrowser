@@ -11,7 +11,8 @@ export default function ({ tabId, defaultURL, onAddTab, onUpdateTabs }) {
     canGoForward: false,
   });
 
-  const handleNavigation = (value) => webviewRef.current?.loadURL(value);
+  const handleNavigation = (value) =>
+    value && webviewRef.current?.loadURL(value);
   const handleGoBack = () => webviewRef.current?.goBack();
   const handleGoForward = () => webviewRef.current?.goForward();
   const handleReload = () => webviewRef.current?.reload();
