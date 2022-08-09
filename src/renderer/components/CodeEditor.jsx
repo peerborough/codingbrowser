@@ -17,6 +17,7 @@ function CodeEditor({ defaultScript }, ref) {
   return (
     <Editor
       height="100%"
+      width="100%"
       defaultLanguage="javascript"
       defaultValue={defaultScript}
       options={{ minimap: { enabled: false } }}
