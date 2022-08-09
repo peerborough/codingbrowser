@@ -76,6 +76,7 @@ export default function ({
         <Input
           variant="outline"
           placeholder="Search or enter web address"
+          color="gray.600"
           value={_searchValue}
           onChange={handleSearchValueChange}
           onKeyDown={(event) => {
