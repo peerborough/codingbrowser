@@ -23,13 +23,21 @@ export default function ({ tabId, defaultURL, onAddTab, onUpdateTabs }) {
 
   const handleUpdateTabs = (value) => {
     onUpdateTabs(tabId, value);
-    if (value.url) {
+
+    if (value.url !== undefined) {
       setSearchValue(value.url);
     }
-  };
 
-  const refreshAddressBar = ({ canGoBack, canGoForward }) => {
-    setIconState({ canGoBack, canGoForward });
+    if (value.canGoBack !== undefined || value.canGoForward !== undefined) {
+      setIconState((iconState) => ({
+        canGoBack:
+          value.canGoBack !== undefined ? value.canGoBack : iconState.canGoBack,
+        canGoForward:
+          value.canGoForward !== undefined
+            ? value.canGoForward
+            : iconState.canGoForward,
+      }));
+    }
   };
 
   return (
@@ -45,7 +53,6 @@ export default function ({ tabId, defaultURL, onAddTab, onUpdateTabs }) {
       <WebView
         ref={webviewRef}
         defaultURL={defaultURL}
-        onStateChanged={refreshAddressBar}
         onAddTab={handleAddTab}
         onUpdateTabs={handleUpdateTabs}
       />

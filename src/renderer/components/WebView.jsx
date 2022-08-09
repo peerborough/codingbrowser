@@ -2,7 +2,7 @@ import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 import store from '../store';
 
-function WebView({ defaultURL, onStateChanged, onAddTab, onUpdateTabs }, ref) {
+function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
   const webviewRef = useRef();
   const jsValue = useSelector((state) => state.editor.preload.value);
 
@@ -52,7 +52,7 @@ function WebView({ defaultURL, onStateChanged, onAddTab, onUpdateTabs }, ref) {
       onAddTab({ url });
     }
 
-    const handleWillNavigate = ({ url }) => {
+    const handleChangeURL = ({ url }) => {
       onUpdateTabs({ url });
     };
 
@@ -63,7 +63,7 @@ function WebView({ defaultURL, onStateChanged, onAddTab, onUpdateTabs }, ref) {
     };
 
     const handleDidStartNavigate = () => {
-      onStateChanged({
+      onUpdateTabs({
         canGoBack: webviewRef.current.canGoBack(),
         canGoForward: webviewRef.current.canGoForward(),
       });
@@ -80,7 +80,7 @@ function WebView({ defaultURL, onStateChanged, onAddTab, onUpdateTabs }, ref) {
     if (webviewRef.current) {
       webviewRef.current.addEventListener('ipc-message', handleIpcMessage);
       webviewRef.current.addEventListener('dom-ready', handleDomReady);
-      webviewRef.current.addEventListener('will-navigate', handleWillNavigate);
+      webviewRef.current.addEventListener('will-navigate', handleChangeURL);
       webviewRef.current.addEventListener(
         'did-start-loading',
         handleStartLoading
@@ -106,7 +106,7 @@ function WebView({ defaultURL, onStateChanged, onAddTab, onUpdateTabs }, ref) {
         webviewRef.current.removeEventListener('dom-ready', handleDomReady);
         webviewRef.current.removeEventListener(
           'will-navigate',
-          handleWillNavigate
+          handleChangeURL
         );
         webviewRef.current.removeEventListener(
           'did-start-loading',
