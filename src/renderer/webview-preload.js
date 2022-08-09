@@ -5,9 +5,11 @@ import { ipcRenderer } from 'electron';
 document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('click', (e) => {
     const anchor = e.srcElement.closest('a');
-    if (anchor.getAttribute('target') == '_blank') {
-      const href = anchor.href;
+    if (!anchor) return;
 
+    const ctrlKeyPressed = e.ctrlKey || e.metaKey;
+    if (ctrlKeyPressed || anchor.getAttribute('target') == '_blank') {
+      const href = anchor.href;
       ipcRenderer.sendToHost('add-tab', { url: href });
     }
   });
