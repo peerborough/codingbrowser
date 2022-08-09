@@ -8,11 +8,11 @@ import {
   Input,
   IconButton,
 } from '@chakra-ui/react';
-import { PhoneIcon } from '@chakra-ui/icons';
 import {
   AiOutlineArrowLeft,
   AiOutlineArrowRight,
   AiOutlineReload,
+  AiOutlineClose,
   AiTwotoneLock,
   AiOutlineSearch,
 } from 'react-icons/ai';
@@ -24,6 +24,7 @@ export default function ({
   onGoBack,
   onGoForward,
   onReload,
+  onStop,
 }) {
   const inputRef = useRef();
   const [_searchValue, _setSearchValue] = useState('');
@@ -71,8 +72,8 @@ export default function ({
         variant="ghost"
         colorScheme="gray"
         aria-label="Reload this page"
-        icon={<AiOutlineReload />}
-        onClick={onReload}
+        icon={iconState.loading ? <AiOutlineClose /> : <AiOutlineReload />}
+        onClick={iconState.loading ? onStop : onReload}
       />
       <InputGroup size="sm">
         <InputLeftElement
@@ -105,7 +106,7 @@ function getUrl(value) {
   const protocols = ['http://', 'https://', 'file://', 'app://'];
   const isProtocol = protocols.find((protocol) => value.startsWith(protocol));
   if (isProtocol) {
-    return `https://www.google.com/search?q=${encodeURI(value)}`;
+    return value;
   }
 
   // domain name

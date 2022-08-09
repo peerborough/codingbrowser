@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Spinner } from '@chakra-ui/react';
 
 export const BrowserTabs = ({
   tabs,
@@ -347,15 +348,26 @@ function Tab({
             alignItems: 'center',
           }}
         >
-          <img
-            src={`https://www.google.com/s2/favicons?domain=${encodeURI(
-              tabs.url
-            )}&sz=${16}`}
-            style={{
-              padding: '0 8px',
-              paddingBottom: 2,
-            }}
-          />
+          {tabs.loading ? (
+            <div
+              style={{
+                padding: '0 8px',
+                paddingBottom: 2,
+              }}
+            >
+              <Spinner size="xs" color="gray.500" />
+            </div>
+          ) : (
+            <img
+              src={`https://www.google.com/s2/favicons?domain=${encodeURI(
+                tabs.url
+              )}&sz=${16}`}
+              style={{
+                padding: '0 8px',
+                paddingBottom: 2,
+              }}
+            />
+          )}
           <span
             style={{
               ...styles.title,

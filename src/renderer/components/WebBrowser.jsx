@@ -9,6 +9,7 @@ export default function ({ tabId, defaultURL, onAddTab, onUpdateTabs }) {
   const [iconState, setIconState] = useState({
     canGoBack: false,
     canGoForward: false,
+    loading: false,
   });
 
   const handleNavigation = (value) =>
@@ -16,6 +17,7 @@ export default function ({ tabId, defaultURL, onAddTab, onUpdateTabs }) {
   const handleGoBack = () => webviewRef.current?.goBack();
   const handleGoForward = () => webviewRef.current?.goForward();
   const handleReload = () => webviewRef.current?.reload();
+  const handleStop = () => webviewRef.current?.stop();
 
   const handleAddTab = ({ url }) => {
     onAddTab(tabId, { url });
@@ -30,12 +32,20 @@ export default function ({ tabId, defaultURL, onAddTab, onUpdateTabs }) {
 
     if (value.canGoBack !== undefined || value.canGoForward !== undefined) {
       setIconState((iconState) => ({
+        ...iconState,
         canGoBack:
           value.canGoBack !== undefined ? value.canGoBack : iconState.canGoBack,
         canGoForward:
           value.canGoForward !== undefined
             ? value.canGoForward
             : iconState.canGoForward,
+      }));
+    }
+
+    if (value.loading !== undefined) {
+      setIconState((iconState) => ({
+        ...iconState,
+        loading: value.loading,
       }));
     }
   };
@@ -49,6 +59,7 @@ export default function ({ tabId, defaultURL, onAddTab, onUpdateTabs }) {
         onGoBack={handleGoBack}
         onGoForward={handleGoForward}
         onReload={handleReload}
+        onStop={handleStop}
       />
       <WebView
         ref={webviewRef}

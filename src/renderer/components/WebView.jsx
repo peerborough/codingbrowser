@@ -19,6 +19,9 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
     reload: () => {
       return webviewRef.current?.reload();
     },
+    stop: () => {
+      return webviewRef.current?.stop();
+    },
     canGoBack: () => {
       return webviewRef.current?.canGoBack();
     },
@@ -56,10 +59,12 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
       onUpdateTabs({ url });
     };
 
-    const handleStartLoading = () => {};
+    const handleStartLoading = () => {
+      onUpdateTabs({ loading: true });
+    };
 
     const handleStopLoading = () => {
-      onUpdateTabs({ url: webviewRef.current.getURL() });
+      onUpdateTabs({ url: webviewRef.current.getURL(), loading: false });
     };
 
     const handleDidStartNavigate = () => {

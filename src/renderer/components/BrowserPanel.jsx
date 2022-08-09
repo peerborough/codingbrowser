@@ -25,11 +25,16 @@ export default function () {
     addTab();
   };
 
-  const onUpdateTabs = (tabId, { title, url }) => {
+  const onUpdateTabs = (tabId, { title, url, loading }) => {
     setTabs((tabs) =>
       tabs.map((tab) =>
         tab.id === tabId
-          ? { ...tab, title: title || tab.title, url: url || tab.url }
+          ? {
+              ...tab,
+              title: title !== undefined ? title : tab.title,
+              url: url !== undefined ? url : tab.url,
+              loading: loading !== undefined ? loading : tab.loading,
+            }
           : tab
       )
     );
