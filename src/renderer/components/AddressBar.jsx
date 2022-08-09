@@ -7,6 +7,7 @@ import {
   InputRightElement,
   Input,
   IconButton,
+  Tooltip,
 } from '@chakra-ui/react';
 import {
   AiOutlineArrowLeft,
@@ -42,39 +43,52 @@ export default function ({
 
   return (
     <HStack p="1" spacing="0">
-      <IconButton
-        size="sm"
-        variant="ghost"
-        colorScheme="gray"
-        aria-label="Go back"
-        icon={
-          <AiOutlineArrowLeft
-            color={iconState.canGoBack ? 'black' : 'lightgray'}
-          />
+      <Tooltip label="Go back" openDelay={2000}>
+        <IconButton
+          size="sm"
+          variant="ghost"
+          colorScheme="gray"
+          aria-label="Go back"
+          icon={
+            <AiOutlineArrowLeft
+              color={iconState.canGoBack ? 'black' : 'lightgray'}
+            />
+          }
+          onClick={onGoBack}
+        />
+      </Tooltip>
+      <Tooltip label="Go forward" openDelay={2000}>
+        <IconButton
+          size="sm"
+          variant="ghost"
+          colorScheme="gray"
+          aria-label="Go forward"
+          icon={
+            <AiOutlineArrowRight
+              color={iconState.canGoForward ? 'black' : 'lightgray'}
+            />
+          }
+          cursor="pointer"
+          onClick={onGoForward}
+        />
+      </Tooltip>
+      <Tooltip
+        label={
+          iconState.loading ? 'Stop loading this page' : 'Reload this page'
         }
-        onClick={onGoBack}
-      />
-      <IconButton
-        size="sm"
-        variant="ghost"
-        colorScheme="gray"
-        aria-label="Go forward"
-        icon={
-          <AiOutlineArrowRight
-            color={iconState.canGoForward ? 'black' : 'lightgray'}
-          />
-        }
-        cursor="pointer"
-        onClick={onGoForward}
-      />
-      <IconButton
-        size="sm"
-        variant="ghost"
-        colorScheme="gray"
-        aria-label="Reload this page"
-        icon={iconState.loading ? <AiOutlineClose /> : <AiOutlineReload />}
-        onClick={iconState.loading ? onStop : onReload}
-      />
+        openDelay={2000}
+      >
+        <IconButton
+          size="sm"
+          variant="ghost"
+          colorScheme="gray"
+          aria-label={
+            iconState.loading ? 'Stop loading this page' : 'Reload this page'
+          }
+          icon={iconState.loading ? <AiOutlineClose /> : <AiOutlineReload />}
+          onClick={iconState.loading ? onStop : onReload}
+        />
+      </Tooltip>
       <InputGroup size="sm">
         <InputLeftElement
           pointerEvents="none"

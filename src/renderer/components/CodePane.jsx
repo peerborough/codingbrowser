@@ -14,6 +14,7 @@ import {
   Tab,
   TabPanels,
   TabPanel,
+  Tooltip,
 } from '@chakra-ui/react';
 import { VscDebugRerun } from 'react-icons/vsc';
 import CodeEditor from './CodeEditor';
@@ -57,14 +58,16 @@ export default function () {
             index.js
           </Tab>
           <Spacer />
-          <IconButton
-            variant="ghost"
-            aria-label="Rerun"
-            size="sm"
-            colorScheme="blackAlpha"
-            icon={<Icon as={VscDebugRerun} w={5} h={5} color="teal" />}
-            onClick={onRerun}
-          />
+          <Tooltip label="Run the code on browser" openDelay={1000}>
+            <IconButton
+              variant="ghost"
+              aria-label="Rerun"
+              size="sm"
+              colorScheme="blackAlpha"
+              icon={<Icon as={VscDebugRerun} w={5} h={5} color="teal" />}
+              onClick={onRerun}
+            />
+          </Tooltip>
           <Box>&nbsp;</Box>
         </HStack>
       </TabList>
