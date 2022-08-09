@@ -2,7 +2,7 @@ import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 import store from '../store';
 
-function WebView({ defaultURL, onStateChanged, onUpdateTabs }, ref) {
+function WebView({ defaultURL, onStateChanged, onAddTab, onUpdateTabs }, ref) {
   const webviewRef = useRef();
   const jsValue = useSelector((state) => state.editor.preload.value);
 
@@ -31,12 +31,26 @@ function WebView({ defaultURL, onStateChanged, onUpdateTabs }, ref) {
     const handleIpcMessage = ({ frameId, channel, args }) => {
       switch (channel) {
         case 'preload-ready':
-          onPreloadReady(webviewRef);
+          handlePreloadReady();
+          break;
+        case 'add-tab':
+          handleAddTab(...args);
           break;
         default:
           console.error('Invalid channel', channel);
       }
     };
+
+    function handlePreloadReady() {
+      const jsValue = store.getState().editor.preload.value;
+      if (jsValue) {
+        webviewRef.current.send('execute-script', jsValue);
+      }
+    }
+
+    function handleAddTab({ url }) {
+      onAddTab({ url });
+    }
 
     const handleWillNavigate = ({ url }) => {
       onUpdateTabs({ url });
@@ -126,13 +140,6 @@ function WebView({ defaultURL, onStateChanged, onUpdateTabs }, ref) {
       }}
     ></webview>
   );
-}
-
-function onPreloadReady(webviewRef) {
-  const jsValue = store.getState().editor.preload.value;
-  if (jsValue) {
-    webviewRef.current.send('execute-script', jsValue);
-  }
 }
 
 export default forwardRef(WebView);

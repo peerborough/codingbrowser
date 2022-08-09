@@ -17,6 +17,14 @@ export default function () {
     addTab();
   }, []);
 
+  const onAddTabFromWebview = (tabId, { url }) => {
+    addTab(tabId, url);
+  };
+
+  const onAddTabFromButton = () => {
+    addTab();
+  };
+
   const onUpdateTabs = (tabId, { title, url }) => {
     setTabs((tabs) =>
       tabs.map((tab) =>
@@ -27,32 +35,45 @@ export default function () {
     );
   };
 
-  const createTab = () => {
+  const createTab = (url) => {
     const tabId = nanoid();
+    const src = url || defaultURL;
 
     return {
       title: defaultTitle,
-      defaultURL: defaultURL,
-      url: defaultURL,
+      defaultURL: src,
+      url: src,
       id: tabId,
       content: (props) => (
         <WebBrowser
           tabId={tabId}
-          defaultURL={defaultURL}
+          defaultURL={src}
+          onAddTab={onAddTabFromWebview}
           onUpdateTabs={onUpdateTabs}
         />
       ),
     };
   };
 
-  const addTab = () => {
-    setActiveTab(tabs.length);
-    setTabs([...tabs, createTab()]);
+  const addTab = (tabAfter, url) => {
+    setTabs((tabs) => {
+      const index = tabAfter
+        ? tabs.findIndex((tab) => tab.id === tabAfter)
+        : -1;
+      if (index === -1) {
+        setActiveTab(tabs.length);
+        return [...tabs, createTab(url)];
+      } else {
+        tabs.splice(index + 1, 0, createTab(url));
+        setActiveTab(index + 1);
+        return [...tabs];
+      }
+    });
   };
 
   return (
     <BrowserTabs
-      onAddTabPress={addTab}
+      onAddTabPress={onAddTabFromButton}
       theme={false ? Dark : Light}
       activeTab={activeTabState}
       tabs={tabsState}

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import AddressBar from './AddressBar';
 import WebView from './WebView';
 
-export default function ({ tabId, defaultURL, onUpdateTabs }) {
+export default function ({ tabId, defaultURL, onAddTab, onUpdateTabs }) {
   const webviewRef = useRef();
 
   const [searchValue, setSearchValue] = useState('');
@@ -16,8 +16,15 @@ export default function ({ tabId, defaultURL, onUpdateTabs }) {
   const handleGoForward = () => webviewRef.current?.goForward();
   const handleReload = () => webviewRef.current?.reload();
 
+  const handleAddTab = ({ url }) => {
+    onAddTab(tabId, { url });
+  };
+
   const handleUpdateTabs = (value) => {
     onUpdateTabs(tabId, value);
+    if (value.url) {
+      setSearchValue(value.url);
+    }
   };
 
   const refreshAddressBar = ({ canGoBack, canGoForward }) => {
@@ -38,6 +45,7 @@ export default function ({ tabId, defaultURL, onUpdateTabs }) {
         ref={webviewRef}
         defaultURL={defaultURL}
         onStateChanged={refreshAddressBar}
+        onAddTab={handleAddTab}
         onUpdateTabs={handleUpdateTabs}
       />
     </>
