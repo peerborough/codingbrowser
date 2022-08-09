@@ -7,8 +7,12 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
   const jsValue = useSelector((state) => state.editor.preload.value);
 
   useImperativeHandle(ref, () => ({
-    loadURL: (url, options) => {
-      return webviewRef.current?.loadURL(url, options);
+    loadURL: async (url, options) => {
+      try {
+        return await webviewRef.current?.loadURL(url, options);
+      } catch (e) {
+        console.info(e);
+      }
     },
     goBack: () => {
       return webviewRef.current?.goBack();
@@ -67,6 +71,13 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
       onUpdateTabs({ url: webviewRef.current.getURL(), loading: false });
     };
 
+    const handleFailure = (event) => {
+      if (event.errorCode !== '-3') {
+        // Incase not a manual stop loadding
+        console.error(event);
+      }
+    };
+
     const handleDidStartNavigate = () => {
       onUpdateTabs({
         canGoBack: webviewRef.current.canGoBack(),
@@ -99,6 +110,7 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
         'did-start-navigation',
         handleDidStartNavigate
       );
+      webviewRef.current.addEventListener('did-fail-load', handleFailure);
       webviewRef.current.addEventListener(
         'page-title-updated',
         handlePageTitleUpdated
@@ -125,6 +137,7 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
           'did-finish-load',
           handleStopLoading
         );
+        webviewRef.current.removeEventListener('did-fail-load', handleFailure);
         webviewRef.current.removeEventListener(
           'did-start-navigation',
           handleDidStartNavigate
