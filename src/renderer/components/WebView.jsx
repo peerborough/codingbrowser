@@ -38,7 +38,7 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
     const handleIpcMessage = ({ frameId, channel, args }) => {
       switch (channel) {
         case 'preload-ready':
-          handlePreloadReady();
+          handlePreloadReady(frameId);
           break;
         case 'add-tab':
           handleAddTab(...args);
@@ -48,10 +48,10 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
       }
     };
 
-    function handlePreloadReady() {
+    function handlePreloadReady(frameId) {
       const jsValue = store.getState().editor.preload.value;
       if (jsValue) {
-        webviewRef.current.send('execute-script', jsValue);
+        webviewRef.current.sendToFrame(frameId, 'execute-script', jsValue);
       }
     }
 
@@ -161,6 +161,7 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
       ref={webviewRef}
       src={defaultURL}
       allowpopups="true"
+      nodeintegrationinsubframes="true"
       webpreferences="nativeWindowOpen=yes"
       preload={`file://${window._codingbrowser.getWebviewPreloadPath()}`}
       style={{
