@@ -348,10 +348,12 @@ function Tab({
           }}
         >
           <img
-            src={'https://www.google.com/s2/favicons?domain=' + tabs.url}
+            src={`https://www.google.com/s2/favicons?domain=${encodeURI(
+              tabs.url
+            )}&sz=${16}`}
             style={{
               padding: '0 8px',
-              paddingBottom: 7,
+              paddingBottom: 2,
             }}
           />
           <span

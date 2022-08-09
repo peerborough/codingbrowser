@@ -4,6 +4,9 @@ import WebBrowser from './WebBrowser';
 import { BrowserTabs, Dark, Light } from './BrowserTabs';
 
 export default function () {
+  const defaultURL = 'https://google.com/';
+  const defaultTitle = 'New Tab ';
+
   const tabsState = useState([]);
   const [tabs, setTabs] = tabsState;
 
@@ -14,36 +17,46 @@ export default function () {
     addTab();
   }, []);
 
-  const onUpdateTitle = (tabId, title) => {
+  const onUpdateTabs = (tabId, { title, url }) => {
     setTabs((tabs) =>
-      tabs.map((tab) => (tab.id === tabId ? { ...tab, title: title } : tab))
+      tabs.map((tab) =>
+        tab.id === tabId
+          ? { ...tab, title: title || tab.title, url: url || tab.url }
+          : tab
+      )
     );
   };
 
-  const addTab = () => {
-    const newTabId = nanoid();
-    const url = 'https://google.com/';
+  const createTab = () => {
+    const tabId = nanoid();
 
+    return {
+      title: defaultTitle,
+      defaultURL: defaultURL,
+      url: defaultURL,
+      id: tabId,
+      content: (props) => (
+        <WebBrowser
+          tabId={tabId}
+          defaultURL={defaultURL}
+          onUpdateTabs={onUpdateTabs}
+        />
+      ),
+    };
+  };
+
+  const addTab = () => {
     setActiveTab(tabs.length);
-    setTabs([...tabs, createTab(newTabId, url, onUpdateTitle)]);
+    setTabs([...tabs, createTab()]);
   };
 
   return (
     <BrowserTabs
-      onAddTabPress={addTab} // CallBack for a Tab Add
-      theme={false ? Dark : Light} // Theming
-      //      injectProps={{ isDark, setisDark }} // custom props that you needed it to be injected.
-      activeTab={activeTabState} // keep a track of active index via state.
-      tabs={tabsState} // tabs
+      onAddTabPress={addTab}
+      theme={false ? Dark : Light}
+      activeTab={activeTabState}
+      tabs={tabsState}
+      //      injectProps={}
     />
   );
 }
-
-const createTab = (tabId, url, onTitleUpdated) => ({
-  title: 'New Tab ',
-  url: url,
-  id: tabId,
-  content: (props) => (
-    <WebBrowser tabId={tabId} url={url} onTitleUpdated={onTitleUpdated} />
-  ),
-});

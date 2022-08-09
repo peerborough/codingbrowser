@@ -2,10 +2,7 @@ import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 import store from '../store';
 
-function WebView(
-  { url, onStateChanged, onSearchUpdated, onTitleUpdated },
-  ref
-) {
+function WebView({ defaultURL, onStateChanged, onUpdateTabs }, ref) {
   const webviewRef = useRef();
   const jsValue = useSelector((state) => state.editor.preload.value);
 
@@ -42,11 +39,11 @@ function WebView(
     };
 
     const handleWillNavigate = ({ url }) => {
-      onSearchUpdated(url);
+      onUpdateTabs({ url });
     };
 
     const handleStopLoading = () => {
-      onSearchUpdated(webviewRef.current.getURL());
+      onUpdateTabs({ url: webviewRef.current.getURL() });
     };
 
     const handleDidStartNavigate = () => {
@@ -57,7 +54,7 @@ function WebView(
     };
 
     const handlePageTitleUpdated = ({ title }) => {
-      onTitleUpdated(title);
+      onUpdateTabs({ title });
     };
 
     const handleDomReady = () => {
@@ -120,7 +117,7 @@ function WebView(
   return (
     <webview
       ref={webviewRef}
-      src={url}
+      src={defaultURL}
       preload={`file://${window._codingbrowser.getWebviewPreloadPath()}`}
       style={{
         display: 'inline-flex',
