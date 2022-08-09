@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   HStack,
   Box,
@@ -25,9 +25,15 @@ export default function ({
   onGoForward,
   onReload,
 }) {
+  const inputRef = useRef();
   const [_searchValue, _setSearchValue] = useState('');
+
   const handleSearchValueChange = (event) =>
     _setSearchValue(event.target.value);
+
+  const handleFocused = () => {
+    inputRef.current?.select();
+  };
 
   useEffect(() => {
     _setSearchValue(searchValue);
@@ -74,11 +80,13 @@ export default function ({
           children={<AiOutlineSearch color="grey" />}
         />
         <Input
+          ref={inputRef}
           variant="outline"
           placeholder="Search or enter web address"
           color="gray.600"
           value={_searchValue}
           onChange={handleSearchValueChange}
+          onFocus={handleFocused}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               if (onNavigate) onNavigate(getUrl(_searchValue));
