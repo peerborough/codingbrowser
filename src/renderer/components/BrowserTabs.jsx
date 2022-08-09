@@ -360,7 +360,7 @@ function Tab({
             style={{
               ...styles.title,
               color: 'rgb(113 113 113)',
-              lineHeight: '15px',
+              lineHeight: '17px',
               height: 19,
               overflow: 'hidden',
             }}
