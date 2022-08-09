@@ -20,7 +20,6 @@ export const BrowserTabs = ({
   } = style;
   const [activeTabIndex, setActiveTabIndex] = activeTab;
   const styles = themedStyle(theme);
-  console.log({ injectProps });
   return (
     <div
       style={{
@@ -55,6 +54,7 @@ export const BrowserTabs = ({
       </div>
       {currTabs.map((tabs, index) => (
         <div
+          key={tabs.id}
           style={{
             ...styles.content,
             flex: 1,
@@ -203,7 +203,7 @@ function tabsLoop(
         : { ...styles.tabBox, ...tabBoxStyle };
 
     return (
-      <div key={'tabs' + index} style={active}>
+      <div key={tabs.id} style={active}>
         <Tab
           activeTabBox={activeTabBox}
           setActiveTabIndex={setActiveTabIndex}
