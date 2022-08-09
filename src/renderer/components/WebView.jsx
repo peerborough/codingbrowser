@@ -160,6 +160,8 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
     <webview
       ref={webviewRef}
       src={defaultURL}
+      allowpopups="true"
+      webpreferences="nativeWindowOpen=yes"
       preload={`file://${window._codingbrowser.getWebviewPreloadPath()}`}
       style={{
         display: 'inline-flex',
