@@ -6,6 +6,7 @@ import store from './store';
 import './App.css';
 import * as monaco from 'monaco-editor';
 import { loader } from '@monaco-editor/react';
+import 'allotment/dist/style.css';
 
 loader.config({ monaco });
 
