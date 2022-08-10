@@ -1,14 +1,14 @@
 import { Allotment } from 'allotment';
 import FullPage from './components/FullPage';
-import BrowserPanel from './components/BrowserPanel';
-import DevPanel from './components/DevPanel';
+import BrowserPane from './components/BrowserPane';
+import DevPane from './components/DevPane';
 
 export default function () {
   return (
     <FullPage>
       <Allotment>
-        <BrowserPanel></BrowserPanel>
-        <DevPanel></DevPanel>
+        <BrowserPane></BrowserPane>
+        <DevPane></DevPane>
       </Allotment>
     </FullPage>
   );
