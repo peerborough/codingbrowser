@@ -20,15 +20,22 @@ import { VscDebugRerun } from 'react-icons/vsc';
 import CodeEditor from './CodeEditor';
 import { setPreloadScript } from '../slices/editorSlice';
 
-const defaultScript = `function onPageReady() {
-  // Write code to be called when document in the given page is loaded
-  
+const defaultScript = `// Called whenever DOM content for each frame has been loaded
+function onReady({ url }) {
+  console.log(\`onReady\${ url }\`);
+
+}
+
+// Called once when main frame has been loaded
+function onMainFrameReady({ url }) {
+  console.log(\`onMainFrameReady\${ url }\`);  
+
 }
 `;
 
 const suffixScript = `
 window.addEventListener('DOMContentLoaded', (event) => {
-  if (onPageReady) onPageReady();
+  if (onReady) onReady({url: window.location.href});
 });
 `;
 
