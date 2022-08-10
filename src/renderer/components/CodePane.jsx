@@ -87,10 +87,4 @@ export default function () {
       </TabPanels>
     </Tabs>
   );
-
-  return (
-    <Flex flex={1} flexDirection="column">
-      <CodeEditor ref={editorRef} defaultScript={defaultScript} />
-    </Flex>
-  );
 }
