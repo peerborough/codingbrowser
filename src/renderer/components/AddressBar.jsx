@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   HStack,
   Box,
@@ -17,16 +17,19 @@ import {
   AiTwotoneLock,
   AiOutlineSearch,
 } from 'react-icons/ai';
+import { useAddressBar } from './useWebBrowsers';
 
 export default function ({
-  searchValue,
-  iconState,
+  tabId,
   onNavigate,
   onGoBack,
   onGoForward,
   onReload,
   onStop,
 }) {
+  const tab = useAddressBar({ tabId });
+  const searchValue = tab.url;
+
   const inputRef = useRef();
   const [_searchValue, _setSearchValue] = useState('');
 
@@ -50,9 +53,7 @@ export default function ({
           colorScheme="gray"
           aria-label="Go back"
           icon={
-            <AiOutlineArrowLeft
-              color={iconState.canGoBack ? 'black' : 'lightgray'}
-            />
+            <AiOutlineArrowLeft color={tab.canGoBack ? 'black' : 'lightgray'} />
           }
           onClick={onGoBack}
         />
@@ -65,7 +66,7 @@ export default function ({
           aria-label="Go forward"
           icon={
             <AiOutlineArrowRight
-              color={iconState.canGoForward ? 'black' : 'lightgray'}
+              color={tab.canGoForward ? 'black' : 'lightgray'}
             />
           }
           cursor="pointer"
@@ -73,9 +74,7 @@ export default function ({
         />
       </Tooltip>
       <Tooltip
-        label={
-          iconState.loading ? 'Stop loading this page' : 'Reload this page'
-        }
+        label={tab.loading ? 'Stop loading this page' : 'Reload this page'}
         openDelay={2000}
       >
         <IconButton
@@ -83,10 +82,10 @@ export default function ({
           variant="ghost"
           colorScheme="gray"
           aria-label={
-            iconState.loading ? 'Stop loading this page' : 'Reload this page'
+            tab.loading ? 'Stop loading this page' : 'Reload this page'
           }
-          icon={iconState.loading ? <AiOutlineClose /> : <AiOutlineReload />}
-          onClick={iconState.loading ? onStop : onReload}
+          icon={tab.loading ? <AiOutlineClose /> : <AiOutlineReload />}
+          onClick={tab.loading ? onStop : onReload}
         />
       </Tooltip>
       <InputGroup size="sm">

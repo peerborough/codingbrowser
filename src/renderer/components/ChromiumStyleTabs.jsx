@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner } from '@chakra-ui/react';
 
-export const BrowserTabs = ({
+export const ChromiumStyleTabs = ({
   tabs,
   activeTab,
   style = {},

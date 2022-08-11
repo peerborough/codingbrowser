@@ -1,9 +1,12 @@
 import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useWebView } from './useWebBrowsers';
 import { useSelector } from 'react-redux';
 import store from '../store';
 
-function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
+function WebView({ tabId, defaultURL }, ref) {
   const webviewRef = useRef();
+  const { insertNewTab, updateTab } = useWebView({ tabId });
+
   const jsValue = useSelector((state) => state.editor.preload.value);
 
   useImperativeHandle(ref, () => ({
@@ -56,19 +59,19 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
     }
 
     function handleAddTab({ url }) {
-      onAddTab({ url });
+      insertNewTab(url);
     }
 
     const handleChangeURL = ({ url }) => {
-      onUpdateTabs({ url });
+      updateTab(tabId, { url });
     };
 
     const handleStartLoading = () => {
-      onUpdateTabs({ loading: true });
+      updateTab(tabId, { loading: true });
     };
 
     const handleStopLoading = () => {
-      onUpdateTabs({ url: webviewRef.current.getURL(), loading: false });
+      updateTab(tabId, { url: webviewRef.current.getURL(), loading: false });
     };
 
     const handleFailure = (event) => {
@@ -79,14 +82,14 @@ function WebView({ defaultURL, onAddTab, onUpdateTabs }, ref) {
     };
 
     const handleDidStartNavigate = () => {
-      onUpdateTabs({
+      updateTab(tabId, {
         canGoBack: webviewRef.current.canGoBack(),
         canGoForward: webviewRef.current.canGoForward(),
       });
     };
 
     const handlePageTitleUpdated = ({ title }) => {
-      onUpdateTabs({ title });
+      updateTab(tabId, { title });
     };
 
     const handleDomReady = () => {
