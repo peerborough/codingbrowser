@@ -163,12 +163,6 @@ function WebView({ tabId }, ref) {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (jsValue) {
-  //     webviewRef.current?.reload();
-  //   }
-  // }, [jsValue]);
-
   return (
     <webview
       ref={webviewRef}
