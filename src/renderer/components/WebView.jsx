@@ -1,13 +1,20 @@
-import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import {
+  useRef,
+  useEffect,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import { useWebView } from './useWebBrowsers';
-import { useSelector } from 'react-redux';
-import store from '../store';
 
 function WebView({ tabId }, ref) {
+  const { defaultURL, jsCode, insertNewTab, updateTab } = useWebView({ tabId });
   const webviewRef = useRef();
-  const { defaultURL, insertNewTab, updateTab } = useWebView({ tabId });
+  const jsCodeRef = useRef(jsCode);
 
-  const jsValue = useSelector((state) => state.editor.preload.value);
+  useEffect(() => {
+    jsCodeRef.current = jsCode;
+  }, [jsCode]);
 
   useImperativeHandle(ref, () => ({
     loadURL: async (url, options) => {
@@ -52,9 +59,12 @@ function WebView({ tabId }, ref) {
     };
 
     function handlePreloadReady(frameId) {
-      const jsValue = store.getState().editor.preload.value;
-      if (jsValue) {
-        webviewRef.current.sendToFrame(frameId, 'execute-script', jsValue);
+      if (jsCodeRef.current) {
+        webviewRef.current.sendToFrame(
+          frameId,
+          'execute-script',
+          jsCodeRef.current
+        );
       }
     }
 
@@ -153,11 +163,11 @@ function WebView({ tabId }, ref) {
     };
   }, []);
 
-  useEffect(() => {
-    if (jsValue) {
-      webviewRef.current?.reload();
-    }
-  }, [jsValue]);
+  // useEffect(() => {
+  //   if (jsValue) {
+  //     webviewRef.current?.reload();
+  //   }
+  // }, [jsValue]);
 
   return (
     <webview
