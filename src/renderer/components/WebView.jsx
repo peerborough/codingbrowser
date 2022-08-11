@@ -3,9 +3,9 @@ import { useWebView } from './useWebBrowsers';
 import { useSelector } from 'react-redux';
 import store from '../store';
 
-function WebView({ tabId, defaultURL }, ref) {
+function WebView({ tabId }, ref) {
   const webviewRef = useRef();
-  const { insertNewTab, updateTab } = useWebView({ tabId });
+  const { defaultURL, insertNewTab, updateTab } = useWebView({ tabId });
 
   const jsValue = useSelector((state) => state.editor.preload.value);
 

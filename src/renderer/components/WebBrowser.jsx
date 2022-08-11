@@ -1,11 +1,9 @@
 import { useRef, useState } from 'react';
 import AddressBar from './AddressBar';
 import WebView from './WebView';
-import { useWebBrowser } from './useWebBrowsers';
 
 export default function ({ tabId }) {
   const webviewRef = useRef();
-  const { defaultURL } = useWebBrowser({ tabId });
 
   const handleNavigation = (value) =>
     value && webviewRef.current?.loadURL(value);
@@ -24,7 +22,7 @@ export default function ({ tabId }) {
         onReload={handleReload}
         onStop={handleStop}
       />
-      <WebView tabId={tabId} ref={webviewRef} defaultURL={defaultURL} />
+      <WebView tabId={tabId} ref={webviewRef} />
     </>
   );
 }

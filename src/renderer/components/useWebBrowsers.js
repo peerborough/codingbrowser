@@ -87,11 +87,6 @@ export function useWebBrowsers({ defaultURL, defaultTitle }) {
   };
 }
 
-export function useWebBrowser({ tabId }) {
-  const { defaultURL } = useWebBrowsersContext();
-  return { defaultURL };
-}
-
 export function useAddressBar({ tabId }) {
   const { browserTabs } = useWebBrowsersContext();
 
@@ -106,8 +101,8 @@ export function useAddressBar({ tabId }) {
 }
 
 export function useWebView({ tabId }) {
-  const { insertNewTab, updateTab } = useWebBrowsersContext();
-  return { insertNewTab, updateTab };
+  const { defaultURL, insertNewTab, updateTab } = useWebBrowsersContext();
+  return { defaultURL, insertNewTab, updateTab };
 }
 
 function getValue(val1, val2) {
