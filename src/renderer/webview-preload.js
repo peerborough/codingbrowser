@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ctrlKeyPressed || anchor.getAttribute('target') == '_blank') {
       const href = anchor.href;
       ipcRenderer.sendToHost('add-tab', { url: href });
+      e.preventDefault();
     }
   });
 });
