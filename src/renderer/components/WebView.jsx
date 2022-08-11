@@ -6,14 +6,21 @@ import {
   forwardRef,
 } from 'react';
 import { useWebView } from './useWebBrowsers';
+import usePrevious from 'renderer/hooks/usePrevious';
 
 function WebView({ tabId }, ref) {
-  const { defaultURL, jsCode, insertNewTab, updateTab } = useWebView({ tabId });
+  const { defaultURL, jsCode, isActiveTab, insertNewTab, updateTab } =
+    useWebView({ tabId });
   const webviewRef = useRef();
   const jsCodeRef = useRef(jsCode);
+  const prevJsCode = usePrevious(jsCode);
 
   useEffect(() => {
     jsCodeRef.current = jsCode;
+    if (isActiveTab && prevJsCode !== undefined && jsCode) {
+      console.log('force reload');
+      webviewRef.current?.reload();
+    }
   }, [jsCode]);
 
   useImperativeHandle(ref, () => ({
@@ -60,11 +67,13 @@ function WebView({ tabId }, ref) {
 
     function handlePreloadReady(frameId) {
       if (jsCodeRef.current) {
-        webviewRef.current.sendToFrame(
-          frameId,
-          'execute-script',
-          jsCodeRef.current
-        );
+        setTimeout(() => {
+          webviewRef.current.sendToFrame(
+            frameId,
+            'execute-script',
+            jsCodeRef.current
+          );
+        }, 0);
       }
     }
 

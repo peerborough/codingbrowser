@@ -102,9 +102,18 @@ export function useAddressBar({ tabId }) {
 }
 
 export function useWebView({ tabId }) {
-  const { defaultURL, jsCode, insertNewTab, updateTab } =
-    useWebBrowsersContext();
-  return { defaultURL, jsCode, insertNewTab, updateTab };
+  const {
+    browserTabs,
+    activeTabIndex,
+    defaultURL,
+    jsCode,
+    insertNewTab,
+    updateTab,
+  } = useWebBrowsersContext();
+
+  const isActiveTab = browserTabs[activeTabIndex]?.id === tabId;
+
+  return { defaultURL, jsCode, isActiveTab, insertNewTab, updateTab };
 }
 
 function getValue(val1, val2) {
