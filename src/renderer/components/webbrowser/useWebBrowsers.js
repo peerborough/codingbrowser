@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { nanoid } from 'nanoid';
 import WebBrowser from './WebBrowser';
-import { createContext } from '../hooks/context';
+import { createContext } from '../../hooks/context';
 
 function makeId() {
   return nanoid();

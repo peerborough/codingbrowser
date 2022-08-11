@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { useSelector } from 'react-redux';
 import WebBrowser from './WebBrowser';
 import { ChromiumStyleTabs, Dark, Light } from './ChromiumStyleTabs';
-import WebBrowsers from './WebBrowsers';
+import WebBrowsers from './webbrowser/WebBrowsers';
 import store from '../store';
 
 export default function () {
