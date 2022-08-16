@@ -5,6 +5,8 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
 } from 'electron';
+import { IpcEvents } from '../ipcEvents';
+import { ipcMainManager } from './ipc';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -54,7 +56,7 @@ export default class MenuBuilder {
 
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
-      label: 'Electron',
+      label: 'CodingBrowser',
       submenu: [
         {
           label: 'About CodingBrowser',
@@ -104,6 +106,17 @@ export default class MenuBuilder {
       label: 'View',
       submenu: [
         {
+          label: 'Toggle Developer Tools',
+          accelerator: 'Alt+Command+I',
+          click: () => {
+            ipcMainManager.send(
+              IpcEvents.TOGGLE_DEV_TOOLS,
+              [],
+              this.mainWindow.webContents
+            );
+          },
+        },
+        {
           label: 'Reload',
           accelerator: 'Command+R',
           click: () => {
@@ -115,13 +128,6 @@ export default class MenuBuilder {
           accelerator: 'Ctrl+Command+F',
           click: () => {
             this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          },
-        },
-        {
-          label: 'Toggle Developer Tools',
-          accelerator: 'Alt+Command+I',
-          click: () => {
-            this.mainWindow.webContents.toggleDevTools();
           },
         },
       ],

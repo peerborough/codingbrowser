@@ -1,7 +1,6 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import path from 'path';
-
-export type Channels = 'ipc-example';
+import { IpcEvents } from '../ipcEvents';
 
 contextBridge.exposeInMainWorld('_codingbrowser', {
   getWebviewPreloadPath: () => {
@@ -9,17 +8,23 @@ contextBridge.exposeInMainWorld('_codingbrowser', {
   },
 
   ipcRenderer: {
-    sendMessage(channel: Channels, args: unknown[]) {
-      ipcRenderer.send(channel, args);
+    send(channel: IpcEvents, ...args: Array<any>) {
+      ipcRenderer.send(channel, ...args);
     },
-    on(channel: Channels, func: (...args: unknown[]) => void) {
-      const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
+    invoke(channel: IpcEvents, ...args: Array<any>) {
+      return ipcRenderer.invoke(channel, ...args);
+    },
+    removeAllListeners(channel: IpcEvents) {
+      ipcRenderer.send(channel);
+    },
+    on(channel: IpcEvents, func: (...args: Array<any>) => void) {
+      const subscription = (_event: IpcRendererEvent, ...args: Array<any>) =>
         func(...args);
       ipcRenderer.on(channel, subscription);
 
       return () => ipcRenderer.removeListener(channel, subscription);
     },
-    once(channel: Channels, func: (...args: unknown[]) => void) {
+    once(channel: IpcEvents, func: (...args: Array<any>) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
   },

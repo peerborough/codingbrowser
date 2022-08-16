@@ -11,7 +11,7 @@ export const [WebBrowsersProvider, useWebBrowsersContext] = createContext({
   name: 'WebBrowsersContext',
 });
 
-export function useWebBrowsers({ defaultURL, defaultTitle, jsCode }) {
+export function useWebBrowsers({ defaultURL, defaultTitle, jsCode, devTools }) {
   const [browserTabs, setBrowserTabs] = useState([]);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
@@ -77,14 +77,15 @@ export function useWebBrowsers({ defaultURL, defaultTitle, jsCode }) {
   return {
     browserTabs,
     activeTabIndex,
+    defaultURL,
+    defaultTitle,
+    jsCode,
+    devTools,
     insertNewTab,
     pushNewTab,
     updateTab,
     setBrowserTabs,
     setActiveTabIndex,
-    defaultURL,
-    defaultTitle,
-    jsCode,
   };
 }
 
@@ -107,13 +108,14 @@ export function useWebView({ tabId }) {
     activeTabIndex,
     defaultURL,
     jsCode,
+    devTools,
     insertNewTab,
     updateTab,
   } = useWebBrowsersContext();
 
   const isActiveTab = browserTabs[activeTabIndex]?.id === tabId;
 
-  return { defaultURL, jsCode, isActiveTab, insertNewTab, updateTab };
+  return { defaultURL, jsCode, devTools, isActiveTab, insertNewTab, updateTab };
 }
 
 function getValue(val1, val2) {

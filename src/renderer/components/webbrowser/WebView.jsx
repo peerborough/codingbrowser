@@ -1,19 +1,22 @@
 import {
   useRef,
   useEffect,
+  useState,
   useCallback,
   useImperativeHandle,
   forwardRef,
 } from 'react';
 import { useWebView } from './useWebBrowsers';
 import usePrevious from 'renderer/hooks/usePrevious';
+import { sleep } from '../../util';
 
 function WebView({ tabId }, ref) {
-  const { defaultURL, jsCode, isActiveTab, insertNewTab, updateTab } =
+  const { defaultURL, jsCode, devTools, isActiveTab, insertNewTab, updateTab } =
     useWebView({ tabId });
   const webviewRef = useRef();
   const jsCodeRef = useRef(jsCode);
   const prevJsCode = usePrevious(jsCode);
+  const [isDomReady, setDomReady] = useState(false);
 
   useEffect(() => {
     jsCodeRef.current = jsCode;
@@ -21,7 +24,21 @@ function WebView({ tabId }, ref) {
       console.log('force reload');
       webviewRef.current?.reload();
     }
-  }, [jsCode]);
+  }, [jsCode, isActiveTab]);
+
+  useEffect(() => {
+    (async function () {
+      if (isActiveTab && devTools) {
+        // Todo: use message queue instead
+        if (!isDomReady) await sleep(300);
+        webviewRef.current?.openDevTools();
+      } else {
+        // Todo: use message queue instead
+        if (!isDomReady) await sleep(300);
+        webviewRef.current?.closeDevTools();
+      }
+    })();
+  }, [devTools, isActiveTab]);
 
   useImperativeHandle(ref, () => ({
     loadURL: async (url, options) => {
@@ -112,7 +129,7 @@ function WebView({ tabId }, ref) {
     };
 
     const handleDomReady = () => {
-      //webviewRef.current.openDevTools();
+      setDomReady(true);
     };
 
     if (webviewRef.current) {
