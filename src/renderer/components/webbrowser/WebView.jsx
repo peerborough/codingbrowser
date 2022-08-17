@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { useWebView } from './useWebBrowsers';
 import usePrevious from 'renderer/hooks/usePrevious';
+import useEventListener from 'renderer/hooks/useEventListener';
 import { sleep } from '../../util';
 
 function WebView({ tabId }, ref) {
@@ -68,126 +69,79 @@ function WebView({ tabId }, ref) {
     },
   }));
 
-  useEffect(() => {
-    const handleIpcMessage = ({ frameId, channel, args }) => {
-      switch (channel) {
-        case 'preload-ready':
-          handlePreloadReady(frameId);
-          break;
-        case 'add-tab':
-          handleAddTab(...args);
-          break;
-        default:
-          console.error('Invalid channel', channel);
-      }
-    };
-
-    function handlePreloadReady(frameId) {
-      if (jsCodeRef.current) {
-        setTimeout(() => {
-          webviewRef.current.sendToFrame(
-            frameId,
-            'execute-script',
-            jsCodeRef.current
-          );
-        }, 0);
-      }
+  const handleIpcMessage = ({ frameId, channel, args }) => {
+    switch (channel) {
+      case 'preload-ready':
+        handlePreloadReady(frameId);
+        break;
+      case 'add-tab':
+        handleAddTab(...args);
+        break;
+      default:
+        console.error('Invalid channel', channel);
     }
+  };
 
-    function handleAddTab({ url }) {
-      insertNewTab(url);
+  function handlePreloadReady(frameId) {
+    if (jsCodeRef.current) {
+      setTimeout(() => {
+        webviewRef.current.sendToFrame(
+          frameId,
+          'execute-script',
+          jsCodeRef.current
+        );
+      }, 0);
     }
+  }
 
-    const handleChangeURL = ({ url }) => {
-      updateTab(tabId, { url });
-    };
+  function handleAddTab({ url }) {
+    insertNewTab(url);
+  }
 
-    const handleStartLoading = () => {
-      updateTab(tabId, { loading: true });
-    };
+  const handleDomReady = () => {
+    setDomReady(true);
+  };
 
-    const handleStopLoading = () => {
-      updateTab(tabId, { url: webviewRef.current.getURL(), loading: false });
-    };
+  const handleChangeURL = ({ url }) => {
+    updateTab(tabId, { url });
+  };
 
-    const handleFailure = (event) => {
-      if (event.errorCode !== '-3') {
-        // Incase not a manual stop loadding
-        console.error(event);
-      }
-    };
+  const handleStartLoading = () => {
+    updateTab(tabId, { loading: true });
+  };
 
-    const handleDidStartNavigate = () => {
-      updateTab(tabId, {
-        canGoBack: webviewRef.current.canGoBack(),
-        canGoForward: webviewRef.current.canGoForward(),
-      });
-    };
+  const handleStopLoading = () => {
+    updateTab(tabId, { url: webviewRef.current.getURL(), loading: false });
+  };
 
-    const handlePageTitleUpdated = ({ title }) => {
-      updateTab(tabId, { title });
-    };
-
-    const handleDomReady = () => {
-      setDomReady(true);
-    };
-
-    if (webviewRef.current) {
-      webviewRef.current.addEventListener('ipc-message', handleIpcMessage);
-      webviewRef.current.addEventListener('dom-ready', handleDomReady);
-      webviewRef.current.addEventListener('will-navigate', handleChangeURL);
-      webviewRef.current.addEventListener(
-        'did-start-loading',
-        handleStartLoading
-      );
-      webviewRef.current.addEventListener(
-        'did-stop-loading',
-        handleStopLoading
-      );
-      webviewRef.current.addEventListener('did-finish-load', handleStopLoading);
-      webviewRef.current.addEventListener(
-        'did-start-navigation',
-        handleDidStartNavigate
-      );
-      webviewRef.current.addEventListener('did-fail-load', handleFailure);
-      webviewRef.current.addEventListener(
-        'page-title-updated',
-        handlePageTitleUpdated
-      );
+  const handleFailure = (event) => {
+    if (event.errorCode !== '-3') {
+      // Incase not a manual stop loadding
+      console.error(event);
     }
+  };
 
-    return () => {
-      if (webviewRef.current) {
-        webviewRef.current.removeEventListener('ipc-message', handleIpcMessage);
-        webviewRef.current.removeEventListener('dom-ready', handleDomReady);
-        webviewRef.current.removeEventListener(
-          'will-navigate',
-          handleChangeURL
-        );
-        webviewRef.current.removeEventListener(
-          'did-start-loading',
-          handleStartLoading
-        );
-        webviewRef.current.removeEventListener(
-          'did-stop-loading',
-          handleStopLoading
-        );
-        webviewRef.current.removeEventListener(
-          'did-finish-load',
-          handleStopLoading
-        );
-        webviewRef.current.removeEventListener('did-fail-load', handleFailure);
-        webviewRef.current.removeEventListener(
-          'did-start-navigation',
-          handleDidStartNavigate
-        );
-        webviewRef.current.removeEventListener(
-          'page-title-updated',
-          handlePageTitleUpdated
-        );
-      }
-    };
-  }, []);
+  const handleDidStartNavigate = () => {
+    updateTab(tabId, {
+      canGoBack: webviewRef.current.canGoBack(),
+      canGoForward: webviewRef.current.canGoForward(),
+    });
+  };
+
+  const handlePageTitleUpdated = ({ title }) => {
+    updateTab(tabId, { title });
+  };
+
+  const webview = webviewRef.current;
+  useEventListener(webview, 'ipc-message', handleIpcMessage);
+  useEventListener(webview, 'dom-ready', handleDomReady);
+  useEventListener(webview, 'will-navigate', handleChangeURL);
+  useEventListener(webview, 'did-start-loading', handleStartLoading);
+  useEventListener(webview, 'did-stop-loading', handleStopLoading);
+  useEventListener(webview, 'did-finish-load', handleStopLoading);
+  useEventListener(webview, 'did-start-navigation', handleDidStartNavigate);
+  useEventListener(webview, 'did-fail-load', handleFailure);
+  useEventListener(webview, 'page-title-updated', handlePageTitleUpdated);
 
   return (
     <webview
