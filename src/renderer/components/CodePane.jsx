@@ -19,6 +19,8 @@ import {
 import { VscDebugRerun } from 'react-icons/vsc';
 import CodeEditor from './CodeEditor';
 import { setPreloadScript } from '../slices/editorSlice';
+import { useIpcRendererListener } from '../ipc';
+import { IpcEvents } from '../../ipcEvents';
 
 const defaultScript = `// Called whenever DOM content for each frame has been loaded
 function onReady({ url }) {
@@ -42,6 +44,12 @@ window.addEventListener('DOMContentLoaded', (event) => {
 export default function () {
   const editorRef = useRef();
   const dispatch = useDispatch();
+
+  useIpcRendererListener(IpcEvents.SELECT_ALL_IN_EDITOR, (event) => {
+    if (editorRef.current?.hasTextFocus()) {
+      editorRef.current?.selectAllTexts();
+    }
+  });
 
   const onRerun = () => {
     const value = editorRef.current?.getValue();
