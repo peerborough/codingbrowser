@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useImperativeHandle, forwardRef } from 'react';
 import { ChromiumStyleTabs, Dark, Light } from './ChromiumStyleTabs';
 import { WebBrowsersProvider, useWebBrowsers } from './useWebBrowsers';
 
-export default function ({ defaultURL, defaultTitle, jsCode, devTools }) {
+function WebBrowsers({ defaultURL, defaultTitle, jsCode, devTools }, ref) {
   const context = useWebBrowsers({
     defaultURL,
     defaultTitle,
@@ -12,6 +12,12 @@ export default function ({ defaultURL, defaultTitle, jsCode, devTools }) {
   const tabs = [context.browserTabs, context.setBrowserTabs];
   const activeTab = [context.activeTabIndex, context.setActiveTabIndex];
   const pushNewTab = context.pushNewTab;
+
+  useImperativeHandle(ref, () => ({
+    pushNewTab: () => {
+      pushNewTab();
+    },
+  }));
 
   return (
     <WebBrowsersProvider value={context}>
@@ -24,3 +30,5 @@ export default function ({ defaultURL, defaultTitle, jsCode, devTools }) {
     </WebBrowsersProvider>
   );
 }
+
+export default forwardRef(WebBrowsers);
