@@ -43,7 +43,6 @@ export function getMainWindowOptions(): Electron.BrowserWindowConstructorOptions
     icon: getAssetPath('icon.png'),
     webPreferences: {
       webviewTag: true,
-      devTools: true,
       nodeIntegrationInSubFrames: true,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
