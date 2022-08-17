@@ -12,8 +12,11 @@
 import { app } from 'electron';
 //import { autoUpdater } from 'electron-updater';
 //import log from 'electron-log';
+import { IpcEvents } from '../ipcEvents';
+import { ipcMainManager } from './ipc';
 import { setupDevTools } from './devtools';
 import { getOrCreateMainWindow } from './windows';
+import { SetUpMenuOptions } from '../interfaces';
 
 // class AppUpdater {
 //   constructor() {
@@ -32,6 +35,7 @@ async function onReady() {
   const { setupMenu } = await import('./menu');
   //  const { setupFileListeners } = await import('./files');
   setupMenu();
+  setupMenuHandler();
   //  setupProtocolHandler();
   //  setupFileListeners();
   // eslint-disable-next-line
@@ -48,6 +52,14 @@ function onBeforeQuit() {
   // ipcMainManager.on(IpcEvents.CONFIRM_QUIT, app.quit);
 }
 
+function setupMenuHandler() {
+  ipcMainManager.on(
+    IpcEvents.SET_MENU_ITEM_OPTIONS,
+    async (_, menuItemOptions) => {
+      (await import('./menu')).setupMenu({ menuItemOptions });
+    }
+  );
+}
 /**
  * All windows have been closed, quit on anything but
  * macOS.

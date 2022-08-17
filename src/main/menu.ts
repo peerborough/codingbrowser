@@ -9,6 +9,7 @@ import { createMainWindow } from './windows';
 import { IpcEvents } from '../ipcEvents';
 import { ipcMainManager } from './ipc';
 import { isDebug } from './util';
+import { SetUpMenuOptions, MenuItemOptions } from '../interfaces';
 
 /**
  * Is the passed object a constructor for an Electron Menu?
@@ -189,7 +190,9 @@ function getFileMenu(): MenuItemConstructorOptions {
 /**
  * Creates the app's window menu.
  */
-export function setupMenu() {
+export function setupMenu(options?: SetUpMenuOptions) {
+  const menuItemOptions = options?.menuItemOptions || null;
+
   // Get template for default menu
   const defaultMenu = require('electron-default-menu');
   const menu = (
@@ -234,6 +237,9 @@ export function setupMenu() {
         {
           label: 'Stop',
           accelerator: 'Command+.',
+          click: () => {
+            return ipcMainManager.send(IpcEvents.STOP_LOADING_BROWSER_TAB);
+          },
         },
         {
           label: 'Reload This Page',
@@ -278,6 +284,14 @@ export function setupMenu() {
       item.submenu = getHelpItems();
     }
 
+    if (menuItemOptions) {
+      if (isSubmenu(item.submenu)) {
+        item.submenu = item.submenu.map((submenu) =>
+          updateMenuItem(submenu, menuItemOptions)
+        );
+      }
+    }
+
     return item;
   });
 
@@ -289,3 +303,18 @@ export function setupMenu() {
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
 }
+
+const updateMenuItem = (
+  item: Electron.MenuItemConstructorOptions,
+  options: MenuItemOptions[]
+): Electron.MenuItemConstructorOptions => {
+  const option = options.find((option) => option.label === item.label);
+  if (option) {
+    return {
+      ...item,
+      enabled: option.enabled !== undefined ? option.enabled : item.enabled,
+    };
+  } else {
+    return item;
+  }
+};

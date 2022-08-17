@@ -105,7 +105,8 @@ export function useAddressBar({ tabId }) {
 export function useWebBrowser({ tabId }) {
   const { browserTabs, activeTabIndex } = useWebBrowsersContext();
   const isActiveTab = browserTabs[activeTabIndex]?.id === tabId;
-  return { isActiveTab };
+  const browserTab = browserTabs.find((tab) => tab.id === tabId);
+  return { isActiveTab, loading: getValue(browserTab?.loading, false) };
 }
 
 export function useWebView({ tabId }) {
