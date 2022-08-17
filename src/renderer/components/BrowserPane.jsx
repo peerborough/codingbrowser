@@ -1,8 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { useSelector } from 'react-redux';
 import WebBrowser from './WebBrowser';
-import { ipcRendererManager, useIpcRendererListener } from '../ipc';
+import { useIpcRendererListener } from '../ipc';
 import { IpcEvents } from '../../ipcEvents';
 import store from '../store';
 
@@ -15,13 +15,9 @@ export default function () {
     webBrowserRef.current?.pushNewTab();
   });
 
-  useEffect(() => {
-    stopListening();
-
-    ipcRendererManager.on(IpcEvents.TOGGLE_DEV_TOOLS, (_event) => {
-      setDevTools((value) => !value);
-    });
-  }, []);
+  useIpcRendererListener(IpcEvents.TOGGLE_DEV_TOOLS, (_event) => {
+    setDevTools((value) => !value);
+  });
 
   return (
     <WebBrowser
@@ -32,8 +28,4 @@ export default function () {
       devTools={devTools}
     />
   );
-}
-
-function stopListening() {
-  ipcRendererManager.removeAllListeners(IpcEvents.TOGGLE_DEV_TOOLS);
 }
