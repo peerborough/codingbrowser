@@ -154,6 +154,7 @@ function getFileMenu(): MenuItemConstructorOptions {
     {
       label: 'New Code',
       accelerator: 'CmdOrCtrl+N',
+      enabled: false,
     },
     {
       label: 'New Browser Tab',
