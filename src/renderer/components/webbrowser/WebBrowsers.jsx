@@ -1,8 +1,13 @@
-import { useState, useImperativeHandle, forwardRef } from 'react';
+import { useState } from 'react';
 import { ChromiumStyleTabs, Dark, Light } from './ChromiumStyleTabs';
 import { WebBrowsersProvider, useWebBrowsers } from './useWebBrowsers';
+import { useIpcRendererListener } from '../../ipc';
+import { IpcEvents } from '../../../ipcEvents';
 
-function WebBrowsers({ defaultURL, defaultTitle, jsCode, devTools }, ref) {
+export default function WebBrowsers(
+  { defaultURL, defaultTitle, jsCode, devTools },
+  ref
+) {
   const context = useWebBrowsers({
     defaultURL,
     defaultTitle,
@@ -13,11 +18,9 @@ function WebBrowsers({ defaultURL, defaultTitle, jsCode, devTools }, ref) {
   const activeTab = [context.activeTabIndex, context.setActiveTabIndex];
   const pushNewTab = context.pushNewTab;
 
-  useImperativeHandle(ref, () => ({
-    pushNewTab: () => {
-      pushNewTab();
-    },
-  }));
+  useIpcRendererListener(IpcEvents.NEW_BROWSER_TAB, (_event) => {
+    pushNewTab();
+  });
 
   return (
     <WebBrowsersProvider value={context}>
@@ -30,5 +33,3 @@ function WebBrowsers({ defaultURL, defaultTitle, jsCode, devTools }, ref) {
     </WebBrowsersProvider>
   );
 }
-
-export default forwardRef(WebBrowsers);
