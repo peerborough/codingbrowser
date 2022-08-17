@@ -235,17 +235,17 @@ export function setupMenu(options?: SetUpMenuOptions) {
 
       item.submenu.push(
         {
-          label: 'Stop',
-          accelerator: 'Command+.',
-          click: () => {
-            return ipcMainManager.send(IpcEvents.STOP_BROWSER_TAB);
-          },
-        },
-        {
           label: 'Reload This Page',
           accelerator: 'Command+R',
           click: () => {
             return ipcMainManager.send(IpcEvents.RELOAD_BROWSER_TAB);
+          },
+        },
+        {
+          label: 'Stop',
+          accelerator: 'Command+.',
+          click: () => {
+            return ipcMainManager.send(IpcEvents.STOP_BROWSER_TAB);
           },
         }
       );
