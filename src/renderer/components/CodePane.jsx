@@ -24,13 +24,7 @@ import { IpcEvents } from '../../ipcEvents';
 
 const defaultScript = `// Called whenever DOM content for each frame has been loaded
 function onReady({ url }) {
-  console.log(\`onReady\${ url }\`);
-
-}
-
-// Called once when main frame has been loaded
-function onMainFrameReady({ url }) {
-  console.log(\`onMainFrameReady\${ url }\`);  
+  console.log(\`onReady( "\${ url }" )\`);
 
 }
 `;
