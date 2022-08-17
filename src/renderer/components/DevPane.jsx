@@ -6,7 +6,7 @@ export default function () {
   return (
     <Allotment defaultSizes={[300, 100]} vertical={true}>
       <CodePane />
-      <DevToolsPane />
+      {/* <DevToolsPane /> */}
     </Allotment>
   );
 }
