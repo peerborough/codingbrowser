@@ -30,9 +30,7 @@ export function useWebBrowsers({ defaultURL, defaultTitle, jsCode, devTools }) {
       loading: false,
       canGoBack: false,
       canGoForward: false,
-      content: (props) => (
-        <WebBrowser tabId={tabId} defaultURL={url || defaultURL} />
-      ),
+      content: (props) => <WebBrowser tabId={tabId} />,
     };
   };
 
@@ -103,26 +101,25 @@ export function useAddressBar({ tabId }) {
 }
 
 export function useWebBrowser({ tabId }) {
-  const { browserTabs, activeTabIndex } = useWebBrowsersContext();
+  const { browserTabs, activeTabIndex, jsCode, devTools, insertNewTab } =
+    useWebBrowsersContext();
   const isActiveTab = browserTabs[activeTabIndex]?.id === tabId;
   const browserTab = browserTabs.find((tab) => tab.id === tabId);
-  return { isActiveTab, loading: getValue(browserTab?.loading, false) };
-}
-
-export function useWebView({ tabId }) {
-  const {
-    browserTabs,
-    activeTabIndex,
-    defaultURL,
+  return {
+    isActiveTab,
+    loading: getValue(browserTab?.loading, false),
     jsCode,
     devTools,
     insertNewTab,
-    updateTab,
-  } = useWebBrowsersContext();
+  };
+}
 
-  const isActiveTab = browserTabs[activeTabIndex]?.id === tabId;
+export function useWebView({ tabId }) {
+  const { browserTabs, updateTab } = useWebBrowsersContext();
+  const currentTab = browserTabs.find((tab) => tab.id === tabId);
+  const defaultURL = currentTab?.defaultURL;
 
-  return { defaultURL, jsCode, devTools, isActiveTab, insertNewTab, updateTab };
+  return { defaultURL, updateTab };
 }
 
 function getValue(val1, val2) {
