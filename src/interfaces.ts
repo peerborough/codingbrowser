@@ -1,6 +1,6 @@
 export interface MenuItemOptions {
   label: string;
-  enabled: boolean;
+  enabled?: boolean;
 }
 
 export interface SetUpMenuOptions {
