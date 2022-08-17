@@ -36,9 +36,16 @@ function onMainFrameReady({ url }) {
 `;
 
 const suffixScript = `
-window.addEventListener('DOMContentLoaded', (event) => {
+if (document.readyState === "complete" 
+   || document.readyState === "loaded" 
+   || document.readyState === "interactive") {
   if (onReady) onReady({url: window.location.href});
-});
+}
+else {
+  window.addEventListener('DOMContentLoaded', (event) => {
+    if (onReady) onReady({url: window.location.href});
+  });  
+}
 `;
 
 export default function () {
