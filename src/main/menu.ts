@@ -238,7 +238,7 @@ export function setupMenu(options?: SetUpMenuOptions) {
           label: 'Stop',
           accelerator: 'Command+.',
           click: () => {
-            return ipcMainManager.send(IpcEvents.STOP_LOADING_BROWSER_TAB);
+            return ipcMainManager.send(IpcEvents.STOP_BROWSER_TAB);
           },
         },
         {
