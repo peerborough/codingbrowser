@@ -1,5 +1,6 @@
 export enum IpcEvents {
   NEW_BROWSER_TAB = 'NEW_BROWSER_TAB',
+  RELOAD_BROWSER_TAB = 'RELOAD_BROWSER_TAB',
   TOGGLE_DEV_TOOLS = 'TOGGLE_DEV_TOOLS',
   RELOAD_WINDOW = 'RELOAD_WINDOW',
   SELECT_ALL_IN_EDITOR = 'SELECT_ALL_IN_EDITOR',
@@ -11,6 +12,7 @@ export const ipcMainEvents = [IpcEvents.RELOAD_WINDOW];
 
 export const ipcRendererEvents = [
   IpcEvents.NEW_BROWSER_TAB,
+  IpcEvents.RELOAD_BROWSER_TAB,
   IpcEvents.TOGGLE_DEV_TOOLS,
   IpcEvents.SELECT_ALL_IN_EDITOR,
   IpcEvents.OPEN_SETTINGS,

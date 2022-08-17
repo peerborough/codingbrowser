@@ -168,17 +168,6 @@ function getFileMenu(): MenuItemConstructorOptions {
       click: () => createMainWindow(),
       accelerator: 'CmdOrCtrl+Shift+N',
     },
-    {
-      type: 'separator',
-    },
-    {
-      label: 'Close',
-      accelerator: 'CmdOrCtrl+W',
-    },
-    {
-      label: 'Close Window',
-      accelerator: 'CmdOrCtrl+Shift+W',
-    },
   ];
 
   // macOS has these items in the "CodingBrowser" menu
@@ -249,12 +238,8 @@ export function setupMenu() {
         {
           label: 'Reload This Page',
           accelerator: 'Command+R',
-        },
-        {
-          label: 'Toggle Developer Tools',
-          accelerator: 'Alt+Command+I',
           click: () => {
-            ipcMainManager.send(IpcEvents.TOGGLE_DEV_TOOLS);
+            return ipcMainManager.send(IpcEvents.RELOAD_BROWSER_TAB);
           },
         }
       );
@@ -275,6 +260,17 @@ export function setupMenu() {
         { role: 'zoomIn' },
         { role: 'zoomOut' }
       ); // Add zooming actions
+
+      item.submenu.push(
+        { type: 'separator' },
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: 'Alt+Command+I',
+          click: () => {
+            ipcMainManager.send(IpcEvents.TOGGLE_DEV_TOOLS);
+          },
+        }
+      );
     }
 
     // Append items to "Help"
