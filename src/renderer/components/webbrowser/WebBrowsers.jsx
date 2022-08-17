@@ -4,22 +4,23 @@ import { WebBrowsersProvider, useWebBrowsers } from './useWebBrowsers';
 import { useIpcRendererListener } from '../../ipc';
 import { IpcEvents } from '../../../ipcEvents';
 
-export default function WebBrowsers(
-  { defaultURL, defaultTitle, jsCode, devTools },
-  ref
-) {
+export default function WebBrowsers({ defaultURL, defaultTitle, jsCode }, ref) {
   const context = useWebBrowsers({
     defaultURL,
     defaultTitle,
     jsCode,
-    devTools,
   });
   const tabs = [context.browserTabs, context.setBrowserTabs];
   const activeTab = [context.activeTabIndex, context.setActiveTabIndex];
   const pushNewTab = context.pushNewTab;
+  const setDevTools = context.setDevTools;
 
   useIpcRendererListener(IpcEvents.NEW_BROWSER_TAB, (_event) => {
     pushNewTab();
+  });
+
+  useIpcRendererListener(IpcEvents.TOGGLE_DEV_TOOLS, (_event) => {
+    setDevTools((value) => !value);
   });
 
   return (

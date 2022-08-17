@@ -11,9 +11,10 @@ export const [WebBrowsersProvider, useWebBrowsersContext] = createContext({
   name: 'WebBrowsersContext',
 });
 
-export function useWebBrowsers({ defaultURL, defaultTitle, jsCode, devTools }) {
+export function useWebBrowsers({ defaultURL, defaultTitle, jsCode }) {
   const [browserTabs, setBrowserTabs] = useState([]);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [devTools, setDevTools] = useState(false);
 
   useEffect(() => {
     pushNewTab();
@@ -84,6 +85,7 @@ export function useWebBrowsers({ defaultURL, defaultTitle, jsCode, devTools }) {
     updateTab,
     setBrowserTabs,
     setActiveTabIndex,
+    setDevTools,
   };
 }
 
