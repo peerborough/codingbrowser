@@ -8,6 +8,15 @@ function CodeEditor({ defaultScript }, ref) {
     getValue: () => {
       return editorRef.current?.getValue();
     },
+    hasTextFocus: () => {
+      return editorRef.current?.hasTextFocus();
+    },
+    selectAllTexts: () => {
+      const model = editorRef.current?.getModel();
+      if (model) {
+        editorRef.current?.setSelection(model.getFullModelRange());
+      }
+    },
   }));
 
   function handleEditorDidMount(editor, monaco) {
