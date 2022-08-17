@@ -37,18 +37,17 @@ export default function ({ tabId }) {
   );
 
   useEffect(() => {
-    if (isActiveTab) {
-      ipcRendererManager.send(IpcEvents.SET_MENU_ITEM_OPTIONS, [
-        {
-          label: 'Reload This Page',
-          enabled: !loading,
-        },
-        {
-          label: 'Stop',
-          enabled: loading,
-        },
-      ]);
-    }
+    if (!isActiveTab) return;
+    ipcRendererManager.send(IpcEvents.SET_MENU_ITEM_OPTIONS, [
+      {
+        label: 'Reload This Page',
+        enabled: !loading,
+      },
+      {
+        label: 'Stop',
+        enabled: loading,
+      },
+    ]);
   }, [isActiveTab, loading]);
 
   return (
