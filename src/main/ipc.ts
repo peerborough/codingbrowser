@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { EventEmitter } from 'events';
-
+import { getOrCreateMainWindow } from './windows';
 import { IpcEvents, ipcMainEvents } from '../ipcEvents';
 
 /**
@@ -54,7 +54,7 @@ class IpcMainManager extends EventEmitter {
     args?: Array<any>,
     target?: Electron.WebContents
   ) {
-    const _target = target; //|| getOrCreateMainWindow().webContents;
+    const _target = target || getOrCreateMainWindow().webContents;
     if (!_target) return;
 
     const _args = args || [];
