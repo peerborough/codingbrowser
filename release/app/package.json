@@ -1,7 +1,7 @@
 {
   "name": "codingbrowser",
   "version": "0.1.0",
-  "description": "Electron-based web automation tool",
+  "description": "Web browser for automation and extraction by live code injection",
   "license": "MIT",
   "author": {
     "name": "Peerborough",

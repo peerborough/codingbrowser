@@ -2,7 +2,7 @@
   "name": "codingbrowser",
   "productName": "CodingBrowser",
   "version": "0.1.0",
-  "description": "Electron-based web automation tool",
+  "description": "Web browser for automation and extraction by live code injection",
   "keywords": [
     "electron",
     "webview",
