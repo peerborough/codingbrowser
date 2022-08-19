@@ -1,7 +1,8 @@
 # CodingBrowser
 
 CodingBrowser a web browser for automation and extraction. It lets you easily **inject** your JavaScript code to any web pages **on the fly**.
-<img width="1365" alt="Screen Shot 2022-08-19 at 2 03 19 PM" src="https://user-images.githubusercontent.com/2793221/185546490-334187bd-7ee6-4896-8611-b28d88244fa2.png">
+<img width="1365" alt="Screen Shot 2022-08-19 at 2 39 21 PM" src="https://user-images.githubusercontent.com/2793221/185550731-cabcc8c1-01ad-40e7-93bf-cff085ad6176.png">
+
 
 ## Why?
 
