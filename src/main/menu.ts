@@ -253,9 +253,15 @@ export function setupMenu(options?: SetUpMenuOptions) {
         { type: 'separator' },
         {
           label: 'Toggle Soft Wrap',
+          click: () =>
+            ipcMainManager.send(IpcEvents.MONACO_TOGGLE_OPTION, ['wordWrap']),
         },
         {
           label: 'Toggle Mini Map',
+          click: () =>
+            ipcMainManager.send(IpcEvents.MONACO_TOGGLE_OPTION, [
+              'minimap.enabled',
+            ]),
         }
       );
 
