@@ -26,7 +26,7 @@ class IpcRendererManager extends EventEmitter {
 export const ipcRendererManager = new IpcRendererManager();
 
 interface EventListener {
-  (event: any): void;
+  (...args: any[]): void;
 }
 
 export function useIpcRendererListener(channel: IpcEvents, handler: any) {
@@ -38,8 +38,8 @@ export function useIpcRendererListener(channel: IpcEvents, handler: any) {
 
   useEffect(
     () => {
-      const eventListener = (event: any) =>
-        savedHandler.current && savedHandler.current(event);
+      const eventListener = (...args: any[]) =>
+        savedHandler.current && savedHandler.current(...args);
       ipcRendererManager.on(channel, eventListener);
 
       return () => {
