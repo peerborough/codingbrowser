@@ -15,11 +15,11 @@ export default function WebBrowsers({ defaultURL, defaultTitle, jsCode }, ref) {
   const pushNewTab = context.pushNewTab;
   const setDevTools = context.setDevTools;
 
-  useIpcRendererListener(IpcEvents.NEW_BROWSER_TAB, (_event) => {
+  useIpcRendererListener(IpcEvents.NEW_BROWSER_TAB, () => {
     pushNewTab();
   });
 
-  useIpcRendererListener(IpcEvents.TOGGLE_DEV_TOOLS, (_event) => {
+  useIpcRendererListener(IpcEvents.TOGGLE_DEV_TOOLS, () => {
     setDevTools((value) => !value);
   });
 
