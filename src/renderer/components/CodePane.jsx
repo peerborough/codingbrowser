@@ -121,15 +121,13 @@ export default function () {
           <Box>&nbsp;</Box>
         </HStack>
       </TabList>
-      <TabPanels display="flex" flex={1}>
-        <TabPanel p={0} display="flex" flex={1}>
-          <Flex flex={1}>
-            <CodeEditor
-              ref={editorRef}
-              defaultScript={defaultScript}
-              monacoOptions={monacoOptions}
-            />
-          </Flex>
+      <TabPanels h="full">
+        <TabPanel p={0} h="full">
+          <CodeEditor
+            ref={editorRef}
+            defaultScript={defaultScript}
+            monacoOptions={monacoOptions}
+          />
         </TabPanel>
       </TabPanels>
     </Tabs>
