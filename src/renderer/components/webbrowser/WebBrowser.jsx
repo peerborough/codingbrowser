@@ -105,7 +105,14 @@ export default function ({ tabId }) {
   }
 
   return (
-    <>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      }}
+    >
       <AddressBar
         tabId={tabId}
         onNavigate={handleNavigation}
@@ -115,6 +122,6 @@ export default function ({ tabId }) {
         onStop={handleStop}
       />
       <WebView ref={webviewRef} tabId={tabId} onIpcMessage={handleIpcMessage} />
-    </>
+    </div>
   );
 }

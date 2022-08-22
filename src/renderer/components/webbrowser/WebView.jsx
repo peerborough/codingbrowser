@@ -116,11 +116,7 @@ function WebView({ tabId, onIpcMessage }, ref) {
       nodeintegrationinsubframes="true"
       webpreferences="nativeWindowOpen=yes"
       preload={`file://${window._codingbrowser.getWebviewPreloadPath()}`}
-      style={{
-        display: 'inline-flex',
-        width: '100%',
-        height: '100%',
-      }}
+      style={{ flex: 1 }}
     ></webview>
   );
 }
