@@ -1,30 +1,14 @@
-import {
-  forwardRef,
-  useRef,
-  useState,
-  useLayoutEffect,
-  useImperativeHandle,
-} from 'react';
+import { forwardRef, useRef, useState, useImperativeHandle } from 'react';
 import Editor from '@monaco-editor/react';
-import useResizeObserver from '@react-hook/resize-observer';
-
-const useSize = (target) => {
-  const [size, setSize] = useState(0);
-
-  useLayoutEffect(() => {
-    if (target.current) {
-      setSize(target.current.getBoundingClientRect());
-    }
-  }, [target]);
-
-  useResizeObserver(target, (entry) => setSize(entry.contentRect));
-  return size;
-};
+import useResizeObserver from 'use-resize-observer';
 
 function CodeEditor({ defaultScript, monacoOptions }, ref) {
   const editorRef = useRef(null);
   const containerRef = useRef(null);
-  const containerSize = useSize(containerRef);
+  const { width, height } = useResizeObserver({
+    ref: containerRef,
+    round: Math.floor,
+  });
 
   useImperativeHandle(ref, () => ({
     getValue: () => {
@@ -54,8 +38,8 @@ function CodeEditor({ defaultScript, monacoOptions }, ref) {
       ref={containerRef}
     >
       <Editor
-        width={containerSize.width}
-        height={containerSize.height}
+        width={width}
+        height={height}
         defaultLanguage="javascript"
         defaultValue={defaultScript}
         options={monacoOptions}
