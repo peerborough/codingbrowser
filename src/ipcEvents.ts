@@ -7,6 +7,8 @@ export enum IpcEvents {
   TOGGLE_DEV_TOOLS = 'TOGGLE_DEV_TOOLS',
   RELOAD_WINDOW = 'RELOAD_WINDOW',
   SELECT_ALL_IN_EDITOR = 'SELECT_ALL_IN_EDITOR',
+  GET_STORE_VALUE = 'GET_STORE_VALUE',
+  SET_STORE_VALUE = 'SET_STORE_VALUE',
   OPEN_SETTINGS = 'OPEN_SETTINGS',
   WEBCONTENTS_READY_FOR_IPC_SIGNAL = 'WEBCONTENTS_READY_FOR_IPC_SIGNAL',
 }
@@ -14,6 +16,8 @@ export enum IpcEvents {
 export const ipcMainEvents = [
   IpcEvents.RELOAD_WINDOW,
   IpcEvents.SET_MENU_ITEM_OPTIONS,
+  IpcEvents.GET_STORE_VALUE,
+  IpcEvents.SET_STORE_VALUE,
 ];
 
 export const ipcRendererEvents = [

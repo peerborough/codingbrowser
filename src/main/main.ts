@@ -16,7 +16,7 @@ import { IpcEvents } from '../ipcEvents';
 import { ipcMainManager } from './ipc';
 import { setupDevTools } from './devtools';
 import { getOrCreateMainWindow } from './windows';
-import { SetUpMenuOptions } from '../interfaces';
+import Store from 'electron-store';
 
 // class AppUpdater {
 //   constructor() {
@@ -27,6 +27,7 @@ import { SetUpMenuOptions } from '../interfaces';
 // }
 
 let argv: string[] = [];
+const store = new Store();
 
 async function onReady() {
   //  await onFirstRunMaybe();
@@ -36,6 +37,7 @@ async function onReady() {
   //  const { setupFileListeners } = await import('./files');
   setupMenu();
   setupMenuHandler();
+  setupStoreHandler();
   //  setupProtocolHandler();
   //  setupFileListeners();
   // eslint-disable-next-line
@@ -60,6 +62,17 @@ function setupMenuHandler() {
     }
   );
 }
+
+function setupStoreHandler() {
+  ipcMainManager.handle(IpcEvents.GET_STORE_VALUE, async (_, key) => {
+    const value = store.get(key);
+    return value;
+  });
+  ipcMainManager.handle(IpcEvents.SET_STORE_VALUE, async (_, key, value) => {
+    store.set(key, value);
+  });
+}
+
 /**
  * All windows have been closed, quit on anything but
  * macOS.
