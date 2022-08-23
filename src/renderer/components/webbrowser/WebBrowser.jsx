@@ -1,10 +1,13 @@
 import { useRef, useState, useCallback, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { Decode } from 'console-feed';
 import AddressBar from './AddressBar';
 import WebView from './WebView';
 import { IpcEvents } from '../../../ipcEvents';
 import { ipcRendererManager, useIpcRendererListener } from '../../ipc';
 import usePrevious from 'renderer/hooks/usePrevious';
 import { useWebBrowser } from './useWebBrowsers';
+import { addLog } from '../../slices/consoleSlice';
 
 export default function ({ tabId }) {
   const webviewRef = useRef();
@@ -12,6 +15,7 @@ export default function ({ tabId }) {
     useWebBrowser({ tabId });
   const jsCodeRef = useRef(jsCode);
   const prevJsCode = usePrevious(jsCode);
+  const dispatch = useDispatch();
 
   const validateActiveTab = useCallback(
     (func) => {
@@ -80,6 +84,9 @@ export default function ({ tabId }) {
       case 'preload-ready':
         handlePreloadReady(frameId);
         break;
+      case 'console-message':
+        handleConsoleMessage(...args);
+        break;
       case 'add-tab':
         handleAddTab(...args);
         break;
@@ -98,6 +105,10 @@ export default function ({ tabId }) {
         );
       }, 0);
     }
+  }
+
+  function handleConsoleMessage(log) {
+    dispatch(addLog(Decode(log)));
   }
 
   function handleAddTab({ url }) {

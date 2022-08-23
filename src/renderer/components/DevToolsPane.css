@@ -1,0 +1,37 @@
+.dev-tools-pane p {
+  margin: 0;
+  padding: 10px;
+}
+.dev-tools-pane > .ant-tabs .ant-tabs-content {
+  height: 100%;
+  margin-top: -16px;
+}
+.dev-tools-pane > .ant-tabs .ant-tabs-tab {
+  padding: 6px 0;
+}
+.dev-tools-pane > .ant-tabs .ant-tabs-nav {
+  padding: 0 12px 0 12px;
+}
+.dev-tools-pane > .ant-tabs .ant-tabs-tab-active .ant-tabs-tab-btn,
+[data-theme='compact']
+  .dev-tools-pane
+  > .ant-tabs
+  .ant-tabs-tab-active
+  .ant-tabs-tab-btn {
+  color: black;
+}
+.dev-tools-pane > .ant-tabs .ant-tabs-tab-btn,
+[data-theme='compact'] .dev-tools-pane > .ant-tabs .ant-tabs-tab-btn {
+  color: gray;
+}
+.dev-tools-pane > .ant-tabs .ant-tabs-tab,
+.ant-tabs-tab-active {
+  font-size: smaller;
+  font-weight: 300;
+}
+
+.dev-tools-pane > .ant-tabs .ant-tabs-ink-bar,
+[data-theme='compact'] .dev-tools-pane > .ant-tabs .ant-tabs-ink-bar {
+  background: black;
+  height: 1px !important;
+}

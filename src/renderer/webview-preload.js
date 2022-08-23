@@ -1,6 +1,16 @@
 import { ipcRenderer } from 'electron';
+import { Hook } from 'console-feed';
 
 //console.info('Starts preloading...', process);
+window._codingbrowser_console = { ...window.console };
+
+Hook(
+  window._codingbrowser_console,
+  (log) => {
+    ipcRenderer.sendToHost('console-message', log);
+  },
+  true
+);
 
 document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('click', (e) => {
@@ -17,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 ipcRenderer.on('execute-script', (event, script) => {
-  var F = new Function(script);
-  F();
+  var F = new Function('console', script);
+  F(window._codingbrowser_console);
 });
 
 ipcRenderer.sendToHost('preload-ready');
