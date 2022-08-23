@@ -1,0 +1,46 @@
+.code-pane > .ant-tabs-card .ant-tabs-content {
+  height: 100%;
+  margin-top: 0;
+}
+.code-pane > .ant-tabs-card .ant-tabs-content > .ant-tabs-tabpane {
+  padding: 0;
+  background: #fff;
+}
+.code-pane > .ant-tabs-card > .ant-tabs-nav {
+  margin: 0;
+}
+.code-pane > .ant-tabs-card > .ant-tabs-nav::before {
+  display: none;
+}
+.code-pane > .ant-tabs-card .ant-tabs-tab,
+[data-theme='compact'] .code-pane > .ant-tabs-card .ant-tabs-tab {
+  background: transparent;
+  border-color: transparent;
+}
+.code-pane > .ant-tabs-card .ant-tabs-tab-active,
+[data-theme='compact'] .code-pane > .ant-tabs-card .ant-tabs-tab-active {
+  background: #fff;
+  border-color: #fff;
+}
+[data-theme='compact'] .code-pane > .ant-tabs-card .ant-tabs-content {
+  height: '100%';
+  margin-top: -8px;
+}
+[data-theme='dark'] .code-pane > .ant-tabs-card .ant-tabs-tab {
+  background: transparent;
+  border-color: transparent;
+}
+[data-theme='dark'] #components-tabs-demo-card-top .code-box-demo {
+  background: #000;
+}
+[data-theme='dark']
+  .code-pane
+  > .ant-tabs-card
+  .ant-tabs-content
+  > .ant-tabs-tabpane {
+  background: #141414;
+}
+[data-theme='dark'] .code-pane > .ant-tabs-card .ant-tabs-tab-active {
+  background: #141414;
+  border-color: #141414;
+}

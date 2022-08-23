@@ -1,27 +1,15 @@
 import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  Box,
-  Flex,
-  HStack,
-  Select,
-  Icon,
-  IconButton,
-  Spacer,
-  Switch,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  Tooltip,
-} from '@chakra-ui/react';
-import { VscDebugRerun } from 'react-icons/vsc';
+import { Tabs, Col, Row, Button } from 'antd';
+import { SaveOutlined } from '@ant-design/icons';
 import CodeEditor from './CodeEditor';
 import { setPreloadScript } from '../slices/editorSlice';
 import { useIpcRendererListener } from '../ipc';
 import { IpcEvents } from '../../ipcEvents';
 import { getAtJsPath, setAtJsPath } from '../util';
+import './CodePane.css';
+
+const { TabPane } = Tabs;
 
 const defaultScript = `// Called whenever DOM content for each frame has been loaded
 function onReady({ url }) {
@@ -93,43 +81,41 @@ export default function () {
   };
 
   return (
-    <Tabs
-      size="sm"
-      display="flex"
-      flex={1}
-      flexDirection="column"
-      variant="unstyled"
-      h="full"
-      w="full"
-    >
-      <TabList h="9" bg="blackAlpha.50">
-        <HStack w="full" py={0}>
-          <Tab _selected={{ color: 'gray.700', bg: 'white' }} h="full">
-            index.js
-          </Tab>
-          <Spacer />
-          <Tooltip label="Run the code on browser" openDelay={1000}>
-            <IconButton
-              variant="ghost"
-              aria-label="Rerun"
-              size="sm"
-              colorScheme="blackAlpha"
-              icon={<Icon as={VscDebugRerun} w={5} h={5} color="teal" />}
+    <>
+      <div style={{ height: '34px' }}>
+        <Row
+          style={{
+            background: '#e8e8e8',
+          }}
+        >
+          <Col flex="100px" style={{ padding: 1 }}>
+            <Button
+              type="text"
+              icon={<SaveOutlined />}
+              size="middle"
+              style={{ color: '#525252', fontWeight: 'normal' }}
               onClick={onRerun}
+            >
+              Save
+            </Button>
+          </Col>
+          <Col flex="auto"></Col>
+        </Row>
+      </div>
+      <div
+        className="code-pane"
+        style={{ height: '100%', paddingBottom: '34px', background: '#f2f2f2' }}
+      >
+        <Tabs defaultActiveKey="1" style={{ height: '100%' }} type="card">
+          <TabPane tab="index.js" key="1">
+            <CodeEditor
+              ref={editorRef}
+              defaultScript={defaultScript}
+              monacoOptions={monacoOptions}
             />
-          </Tooltip>
-          <Box>&nbsp;</Box>
-        </HStack>
-      </TabList>
-      <TabPanels h="full">
-        <TabPanel p={0} h="full">
-          <CodeEditor
-            ref={editorRef}
-            defaultScript={defaultScript}
-            monacoOptions={monacoOptions}
-          />
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+          </TabPane>
+        </Tabs>
+      </div>
+    </>
   );
 }
