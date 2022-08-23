@@ -14,6 +14,9 @@ function CodeEditor({ defaultScript, monacoOptions }, ref) {
     getValue: () => {
       return editorRef.current?.getValue();
     },
+    setValue: (value) => {
+      editorRef.current?.setValue(value);
+    },
     hasTextFocus: () => {
       return editorRef.current?.hasTextFocus();
     },

@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Tabs, Col, Row, Button } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
+import Store from 'electron-store';
 import CodeEditor from './CodeEditor';
 import { setPreloadScript } from '../slices/editorSlice';
-import { useIpcRendererListener } from '../ipc';
+import { ipcRendererManager, useIpcRendererListener } from '../ipc';
 import { IpcEvents } from '../../ipcEvents';
 import { getAtJsPath, setAtJsPath } from '../util';
 import './CodePane.css';
@@ -31,6 +32,20 @@ else {
 }
 `;
 
+const useSavedScript = () => {
+  const [script, setScript] = useState('');
+  useEffect(() => {
+    (async function () {
+      const value = await ipcRendererManager.invoke(
+        IpcEvents.GET_STORE_VALUE,
+        'cache.indexjs'
+      );
+      setScript(value || defaultScript);
+    })();
+  }, []);
+  return script;
+};
+
 export default function () {
   const editorRef = useRef();
   const dispatch = useDispatch();
@@ -40,6 +55,7 @@ export default function () {
     },
     wordWrap: 'on',
   });
+  const script = useSavedScript();
 
   useIpcRendererListener(IpcEvents.MONACO_TOGGLE_OPTION, (cmd) => {
     toggleEditorOption(cmd);
@@ -51,10 +67,20 @@ export default function () {
     }
   });
 
-  const onRerun = () => {
+  useEffect(() => {
+    editorRef.current?.setValue(script);
+  }, [script]);
+
+  const onSave = async () => {
     const value = editorRef.current?.getValue();
     const scriptValue = `${value};${suffixScript}`;
     dispatch(setPreloadScript(scriptValue));
+
+    await ipcRendererManager.invoke(
+      IpcEvents.SET_STORE_VALUE,
+      'cache.indexjs',
+      value
+    );
   };
 
   const toggleEditorOption = (path) => {
@@ -94,7 +120,7 @@ export default function () {
               icon={<SaveOutlined />}
               size="middle"
               style={{ color: '#525252', fontWeight: 'normal' }}
-              onClick={onRerun}
+              onClick={onSave}
             >
               Save
             </Button>
@@ -110,7 +136,7 @@ export default function () {
           <TabPane tab="index.js" key="1">
             <CodeEditor
               ref={editorRef}
-              defaultScript={defaultScript}
+              defaultScript={script}
               monacoOptions={monacoOptions}
             />
           </TabPane>
