@@ -36,14 +36,17 @@ const useSavedScript = () => {
   const [script, setScript] = useState('');
   useEffect(() => {
     (async function () {
-      const value = await ipcRendererManager.invoke(
+      let value = await ipcRendererManager.invoke(
         IpcEvents.GET_STORE_VALUE,
         'cache.indexjs'
       );
-      setScript(value || defaultScript);
+      if (value == null || value.length === 0) {
+        value = defaultScript;
+      }
+      setScript(value);
     })();
   }, []);
-  return script;
+  return [script];
 };
 
 export default function () {
@@ -55,7 +58,8 @@ export default function () {
     },
     wordWrap: 'on',
   });
-  const script = useSavedScript();
+  const [isDirty, setDirty] = useState(false);
+  const [script] = useSavedScript();
 
   useIpcRendererListener(IpcEvents.MONACO_TOGGLE_OPTION, (cmd) => {
     toggleEditorOption(cmd);
@@ -68,7 +72,10 @@ export default function () {
   });
 
   useEffect(() => {
-    editorRef.current?.setValue(script);
+    if (!script) return;
+    setTimeout(() => {
+      editorRef.current?.setValue(script);
+    }, 0);
   }, [script]);
 
   const onSave = async () => {
@@ -81,6 +88,12 @@ export default function () {
       'cache.indexjs',
       value
     );
+
+    setDirty(false);
+  };
+
+  const handleChange = (value) => {
+    setDirty(true);
   };
 
   const toggleEditorOption = (path) => {
@@ -121,6 +134,7 @@ export default function () {
               size="middle"
               style={{ color: '#525252', fontWeight: 'normal' }}
               onClick={onSave}
+              disabled={!isDirty}
             >
               Save
             </Button>
@@ -136,8 +150,8 @@ export default function () {
           <TabPane tab="index.js" key="1">
             <CodeEditor
               ref={editorRef}
-              defaultScript={script}
               monacoOptions={monacoOptions}
+              onChange={handleChange}
             />
           </TabPane>
         </Tabs>

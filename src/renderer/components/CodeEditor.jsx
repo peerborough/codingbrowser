@@ -2,7 +2,7 @@ import { forwardRef, useRef, useState, useImperativeHandle } from 'react';
 import Editor from '@monaco-editor/react';
 import useResizeObserver from 'use-resize-observer';
 
-function CodeEditor({ defaultScript, monacoOptions }, ref) {
+function CodeEditor({ monacoOptions, onChange }, ref) {
   const editorRef = useRef(null);
   const containerRef = useRef(null);
   const { width, height } = useResizeObserver({
@@ -44,9 +44,9 @@ function CodeEditor({ defaultScript, monacoOptions }, ref) {
         width={width}
         height={height}
         defaultLanguage="javascript"
-        defaultValue={defaultScript}
         options={monacoOptions}
         onMount={handleEditorDidMount}
+        onChange={onChange}
       />
     </div>
   );
