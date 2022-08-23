@@ -1,3 +1,8 @@
+.ant-btn[disabled] {
+  cursor: default !important;
+  opacity: 0.3 !important;
+}
+
 .code-pane > .ant-tabs-card .ant-tabs-content {
   height: 100%;
   margin-top: 0;
