@@ -1,8 +1,7 @@
 import { VscChevronUp, VscClose } from 'react-icons/vsc';
 import DebugConsole from './DebugConsole';
-
 import { Tabs } from 'antd';
-import React from 'react';
+
 const { TabPane } = Tabs;
 
 import './DevToolsPane.css';
