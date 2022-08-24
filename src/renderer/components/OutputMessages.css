@@ -1,0 +1,18 @@
+.react-chatbot-kit-chat-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.react-chatbot-kit-chat-inner-container {
+  height: 100%;
+}
+
+.react-chatbot-kit-chat-message-container {
+  height: 100%;
+}
+
+.react-chatbot-kit-chat-bot-message {
+  margin-left: 10px !important;
+  width: auto !important;
+  max-width: 70% !important;
+}

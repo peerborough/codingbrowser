@@ -4,7 +4,7 @@ import DevToolsPane from './DevToolsPane';
 
 export default function () {
   return (
-    <Allotment defaultSizes={[300, 100]} vertical={true}>
+    <Allotment defaultSizes={[600, 400]} vertical={true}>
       <CodePane />
       <DevToolsPane />
     </Allotment>
