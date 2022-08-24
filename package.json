@@ -114,6 +114,7 @@
     "monaco-editor": "^0.34.0",
     "nanoid": "^4.0.0",
     "react": "^18.2.0",
+    "react-chatbot-kit": "^2.1.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
     "react-redux": "^8.0.2",
