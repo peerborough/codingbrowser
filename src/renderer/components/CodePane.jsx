@@ -56,7 +56,7 @@ export default function () {
     minimap: {
       enabled: false,
     },
-    wordWrap: 'on',
+    wordWrap: 'off',
   });
   const [isDirty, setDirty] = useState(false);
   const [script] = useSavedScript();
