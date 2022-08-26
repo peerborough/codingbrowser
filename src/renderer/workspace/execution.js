@@ -22,7 +22,19 @@ else {
 
 export async function start() {
   const rootPath = store.getState().workspace.rootPath;
+  await startMain(rootPath);
+  await startPreload(rootPath);
+}
 
+export function stop() {
+  store.dispatch(stopSlice());
+}
+
+async function startMain(rootPath) {
+  console.log('startMain');
+}
+
+async function startPreload(rootPath) {
   let preload = await ipcRendererManager.invoke(
     IpcEvents.LOAD_USER_FILE,
     `${rootPath}preload.js`
@@ -33,8 +45,4 @@ export async function start() {
   }
 
   store.dispatch(startSlice({ preload }));
-}
-
-export function stop() {
-  store.dispatch(stopSlice());
 }
