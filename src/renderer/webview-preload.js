@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { Hook } from 'console-feed';
+import * as API from '../api/preload';
 
 //console.info('Starts preloading...', process);
 window._codingbrowser_console = { ...window.console };
@@ -27,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 ipcRenderer.on('execute-script', (event, script) => {
-  var F = new Function('console', script);
-  F(window._codingbrowser_console);
+  var F = new Function('console', 'codingbrowser', script);
+  F(window._codingbrowser_console, API);
 });
 
 ipcRenderer.sendToHost('preload-ready');
