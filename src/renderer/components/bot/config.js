@@ -3,7 +3,7 @@ import { createChatBotMessage } from 'react-chatbot-kit';
 const botName = 'CodingBrowser';
 
 const config = {
-  initialMessages: [createChatBotMessage(`Hi! I'm ${botName}`)],
+  initialMessages: [createChatBotMessage(`Press the Start button 🙂`)],
   botName: botName,
   customComponents: {
     header: () => <></>,
