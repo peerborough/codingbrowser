@@ -12,11 +12,12 @@
 import { app } from 'electron';
 //import { autoUpdater } from 'electron-updater';
 //import log from 'electron-log';
+import Store from 'electron-store';
 import { IpcEvents } from '../ipcEvents';
 import { ipcMainManager } from './ipc';
 import { setupDevTools } from './devtools';
 import { getOrCreateMainWindow } from './windows';
-import Store from 'electron-store';
+import { saveMemoryFile, loadMemoryFile } from './memoryfile';
 
 // class AppUpdater {
 //   constructor() {
@@ -38,6 +39,7 @@ async function onReady() {
   setupMenu();
   setupMenuHandler();
   setupStoreHandler();
+  setupUserFileHandler();
   //  setupProtocolHandler();
   //  setupFileListeners();
   // eslint-disable-next-line
@@ -71,6 +73,26 @@ function setupStoreHandler() {
   ipcMainManager.handle(IpcEvents.SET_STORE_VALUE, async (_, key, value) => {
     store.set(key, value);
   });
+}
+
+function setupUserFileHandler() {
+  ipcMainManager.handle(IpcEvents.LOAD_USER_FILE, async (_, filepath) => {
+    if (filepath.startsWith('memory://')) {
+      return loadMemoryFile(filepath);
+    } else {
+      console.error('Not impmemented protocol');
+    }
+  });
+  ipcMainManager.handle(
+    IpcEvents.SAVE_USER_FILE,
+    async (_, filepath, value) => {
+      if (filepath.startsWith('memory://')) {
+        return saveMemoryFile(filepath, value);
+      } else {
+        console.error('Not impmemented protocol');
+      }
+    }
+  );
 }
 
 /**
