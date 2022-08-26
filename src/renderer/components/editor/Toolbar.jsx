@@ -1,12 +1,24 @@
 import { Col, Row, Button } from 'antd';
-import { SaveOutlined } from '@ant-design/icons';
+import {
+  SaveOutlined,
+  PlayCircleOutlined,
+  StopOutlined,
+} from '@ant-design/icons';
 import { useToolbar } from './useCodeEditors';
 
 export default function () {
-  const { dirty, save } = useToolbar();
+  const { dirty, execution, save, start, stop } = useToolbar();
 
-  const onSave = async () => {
+  const handleSave = async () => {
     save();
+  };
+
+  const hanedleStart = async () => {
+    start();
+  };
+
+  const handleStop = async () => {
+    stop();
   };
 
   return (
@@ -16,13 +28,34 @@ export default function () {
           background: '#e8e8e8',
         }}
       >
-        <Col flex="100px" style={{ padding: 1 }}>
+        <Col flex="300px" style={{ padding: 1 }}>
+          {execution === 'start' ? (
+            <Button
+              type="text"
+              icon={<StopOutlined style={{ color: '#cc0000' }} />}
+              size="middle"
+              style={{ color: '#525252', fontWeight: 'normal' }}
+              onClick={handleStop}
+            >
+              Stop
+            </Button>
+          ) : (
+            <Button
+              type="text"
+              icon={<PlayCircleOutlined style={{ color: 'green' }} />}
+              size="middle"
+              style={{ color: '#525252', fontWeight: 'normal' }}
+              onClick={hanedleStart}
+            >
+              Start
+            </Button>
+          )}
           <Button
             type="text"
             icon={<SaveOutlined />}
             size="middle"
             style={{ color: '#525252', fontWeight: 'normal' }}
-            onClick={onSave}
+            onClick={handleSave}
             disabled={!dirty}
           >
             Save

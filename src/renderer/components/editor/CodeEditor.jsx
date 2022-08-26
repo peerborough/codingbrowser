@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import Editor from '@monaco-editor/react';
 import useResizeObserver from 'use-resize-observer';
 import { useCodeEditor } from './useCodeEditors';
@@ -6,7 +6,7 @@ import { useCodeEditor } from './useCodeEditors';
 export default function CodeEditor({ tabKey }) {
   const containerRef = useRef(null);
   const [editor, setEditor] = useState(null);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(null);
   const { monacoOption, load, setDirty } = useCodeEditor({
     tabKey,
     ref: editor,
@@ -25,10 +25,15 @@ export default function CodeEditor({ tabKey }) {
     });
   }
 
-  function handleChange(value) {
-    setValue(value);
-    setDirty(true);
-  }
+  const handleChange = useCallback(
+    (newValue) => {
+      if (value !== null) {
+        setDirty(true);
+      }
+      setValue(newValue);
+    },
+    [value]
+  );
 
   return (
     <div

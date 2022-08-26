@@ -1,15 +1,25 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
+import {
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useCallback,
+} from 'react';
 import { nanoid } from 'nanoid';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createContext } from '../../hooks/context';
 import { defaultOption, toggleEditorOption } from './manacoOption';
 import { ipcRendererManager, useIpcRendererListener } from '../../ipc';
 import { IpcEvents } from '../../../ipcEvents';
-import { setPreloadScript } from '../../slices/workspaceSlice';
+import {
+  start as startWorkspace,
+  stop as stopWorkspace,
+} from '../../workspace/execution';
 
 function getDefaultScript(filepath) {
   switch (filepath) {
     case 'preload.js':
+    case 'memory://preload.js':
       return `/**
  *
  *  A script that will be loaded for every frame
@@ -23,6 +33,7 @@ function onReady({ url }) {
 }
 `;
     case 'main.js':
+    case 'memory://main.js':
       return `/**
  *
  *  A script for the main application
@@ -33,27 +44,6 @@ const { output }  = window.codingbrowser;
 
 `;
   }
-}
-
-const suffixScript = `
-if (document.readyState === "complete" 
-   || document.readyState === "loaded" 
-   || document.readyState === "interactive") {
-  if (onReady) onReady({url: window.location.href});
-}
-else {
-  window.addEventListener('DOMContentLoaded', (event) => {
-    if (onReady) onReady({url: window.location.href});
-  });  
-}
-`;
-
-function getCacheName(filepath) {
-  let name = filepath
-    .replaceAll('.', '_')
-    .replaceAll('/', '_')
-    .replaceAll('\\', '_');
-  return `cache.${name}`;
 }
 
 function makeId() {
@@ -93,11 +83,11 @@ export function useCodeEditors() {
     const defaultTabs = [
       createTab({
         title: 'preload.js',
-        filepath: 'preload.js',
+        filepath: 'memory://preload.js',
       }),
       createTab({
         title: 'main.js',
-        filepath: 'main.js',
+        filepath: 'memory://main.js',
       }),
     ];
     setTabs(defaultTabs);
@@ -113,6 +103,15 @@ export function useCodeEditors() {
     });
   };
 
+  const start = async () => {
+    await saveAll();
+    startWorkspace();
+  };
+
+  const stop = async () => {
+    stopWorkspace();
+  };
+
   const save = useCallback(
     async (tabKey) => {
       const tab = tabs.find((tab) => tab.key === tabKey);
@@ -122,27 +121,35 @@ export function useCodeEditors() {
       const value = editorRefs.current[tabKey].getValue();
 
       await ipcRendererManager.invoke(
-        IpcEvents.SET_STORE_VALUE,
-        getCacheName(tab.filepath),
+        IpcEvents.SAVE_USER_FILE,
+        tab.filepath,
         value
       );
-      dispatch(setPreloadScript(`${value};${suffixScript}`));
       setDirty(tabKey, false);
     },
     [tabs]
   );
+
+  const saveAll = useCallback(async () => {
+    for (const tab of tabs) {
+      await save(tab.key);
+    }
+  }, [tabs]);
 
   const load = useCallback(
     async (tabKey) => {
       const tab = tabs.find((tab) => tab.key === tabKey);
       if (!tab || !tab.filepath) return;
 
-      return (
-        (await ipcRendererManager.invoke(
-          IpcEvents.GET_STORE_VALUE,
-          getCacheName(tab.filepath)
-        )) || getDefaultScript(tab.filepath)
+      let value = await ipcRendererManager.invoke(
+        IpcEvents.LOAD_USER_FILE,
+        tab.filepath
       );
+      if (value === null) {
+        value = getDefaultScript(tab.filepath);
+      }
+      setDirty(tabKey, false);
+      return value;
     },
     [tabs]
   );
@@ -163,6 +170,8 @@ export function useCodeEditors() {
     activeTabKey,
     setActiveTabKey,
     setDirty,
+    start,
+    stop,
     save,
     load,
     register,
@@ -171,15 +180,16 @@ export function useCodeEditors() {
 }
 
 export function useToolbar() {
-  const { tabs, activeTabKey, save } = useCodeEditorsContext();
+  const { tabs, activeTabKey, save, start, stop } = useCodeEditorsContext();
   const activeTab = tabs.find((tab) => tab.key === activeTabKey);
   const dirty = !!activeTab?.dirty;
+  const execution = useSelector((state) => state.workspace.execution);
 
   const saveCallback = useCallback(() => {
     save(activeTabKey);
   }, [activeTabKey]);
 
-  return { dirty, save: saveCallback };
+  return { dirty, execution, save: saveCallback, start, stop };
 }
 
 export function useCodeEditorTabs() {
@@ -191,7 +201,7 @@ export function useCodeEditor({ tabKey, ref }) {
   const { monacoOption, setDirty, load, register, unregister } =
     useCodeEditorsContext();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     register(tabKey, ref);
     return () => {
       unregister(tabKey);
