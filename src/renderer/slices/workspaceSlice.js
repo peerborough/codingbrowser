@@ -1,16 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const editorSlice = createSlice({
-  name: 'editor',
+  name: 'workspace',
   initialState: {
-    preload: {
-      value: '',
-      isDirty: false,
-    },
+    preload: '',
+    execute: 'stop', // start, stop
   },
   reducers: {
     setPreloadScript: (state, action) => {
-      state.preload.value = action.payload;
+      state.preload = action.payload;
     },
   },
 });

@@ -7,7 +7,7 @@ import { IpcEvents } from '../../ipcEvents';
 import store from '../store';
 
 export default function () {
-  const jsCode = useSelector((state) => state.editor.preload.value);
+  const jsCode = useSelector((state) => state.workspace.preload);
 
   return (
     <WebBrowser

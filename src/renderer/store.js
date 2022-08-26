@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import editorReducer from './slices/editorSlice';
+import workspaceReducer from './slices/workspaceSlice';
 import consoleReducer from './slices/consoleSlice';
 
 export default configureStore({
   reducer: {
-    editor: editorReducer,
+    workspace: workspaceReducer,
     console: consoleReducer,
   },
 });

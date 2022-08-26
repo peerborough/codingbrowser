@@ -5,7 +5,7 @@ import { createContext } from '../../hooks/context';
 import { defaultOption, toggleEditorOption } from './manacoOption';
 import { ipcRendererManager, useIpcRendererListener } from '../../ipc';
 import { IpcEvents } from '../../../ipcEvents';
-import { setPreloadScript } from '../../slices/editorSlice';
+import { setPreloadScript } from '../../slices/workspaceSlice';
 
 function getDefaultScript(filepath) {
   switch (filepath) {
