@@ -20,8 +20,7 @@
 [data-theme='compact'] .dev-tools-pane > .ant-tabs .ant-tabs-tab-btn {
   color: gray;
 }
-.dev-tools-pane > .ant-tabs .ant-tabs-tab,
-.ant-tabs-tab-active {
+.dev-tools-pane > .ant-tabs .ant-tabs-tab {
   font-size: smaller;
   font-weight: 300;
 }
