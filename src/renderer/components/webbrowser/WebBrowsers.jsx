@@ -4,7 +4,10 @@ import { WebBrowsersProvider, useWebBrowsers } from './useWebBrowsers';
 import { useIpcRendererListener } from '../../ipc';
 import { IpcEvents } from '../../../ipcEvents';
 
-export default function WebBrowsers({ defaultURL, defaultTitle, jsCode }, ref) {
+export default function WebBrowsers(
+  { defaultURL, defaultTitle, jsCode, children },
+  ref
+) {
   const context = useWebBrowsers({
     defaultURL,
     defaultTitle,
@@ -30,7 +33,9 @@ export default function WebBrowsers({ defaultURL, defaultTitle, jsCode }, ref) {
         activeTab={activeTab}
         theme={Light}
         onAddTabPress={() => pushNewTab()}
-      />
+      >
+        {children}
+      </ChromiumStyleTabs>
     </WebBrowsersProvider>
   );
 }

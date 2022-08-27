@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Allotment } from 'allotment';
 import { Spinner } from '@chakra-ui/react';
 
 export const ChromiumStyleTabs = ({
@@ -8,6 +9,7 @@ export const ChromiumStyleTabs = ({
   theme = Light,
   onAddTabPress,
   injectProps,
+  children,
 }) => {
   const [currTabs, setNewTabs] = tabs;
   const {
@@ -53,18 +55,25 @@ export const ChromiumStyleTabs = ({
             )
           : console.log('Some thing wrong with currtabs ', { currTabs })}
       </div>
-      {currTabs.map((tabs, index) => (
-        <div
-          key={tabs.id}
-          style={{
-            ...styles.content,
-            flex: 1,
-            display: index != activeTabIndex && 'none',
-          }}
-        >
-          {<tabs.content {...injectProps} />}
-        </div>
-      ))}
+      <div style={{ width: '100%', height: '100%' }}>
+        <Allotment defaultSizes={[600, 400]}>
+          <div style={{ width: '100%', height: '100%' }}>
+            {currTabs.map((tabs, index) => (
+              <div
+                key={tabs.id}
+                style={{
+                  ...styles.content,
+                  flex: 1,
+                  display: index != activeTabIndex && 'none',
+                }}
+              >
+                {<tabs.content {...injectProps} />}
+              </div>
+            ))}
+          </div>
+          <div style={{ width: '100%', height: '100%' }}>{children}</div>
+        </Allotment>
+      </div>
     </div>
   );
 };

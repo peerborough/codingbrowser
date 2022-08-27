@@ -2,6 +2,7 @@ import React from 'react';
 import { nanoid } from 'nanoid';
 import { useSelector } from 'react-redux';
 import WebBrowser from './WebBrowser';
+import DevPane from './DevPane';
 import { useIpcRendererListener } from '../ipc';
 import { IpcEvents } from '../../ipcEvents';
 import store from '../store';
@@ -14,6 +15,8 @@ export default function () {
       defaultURL="https://google.com/"
       defaultTitle="New Tab "
       jsCode={jsCode}
-    />
+    >
+      <DevPane />
+    </WebBrowser>
   );
 }
