@@ -1,13 +1,21 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import WebBrowser from './components/WebBrowser';
 import MainPage from './MainPage';
+import {
+  WorkspaceProvider,
+  useWorkspaceProvider,
+  useWorkspace,
+} from './workspace/useWorkspace';
 
 export default function () {
+  const context = useWorkspaceProvider();
+
   return (
-    <FullPage>
-      <Browser></Browser>
-    </FullPage>
+    <WorkspaceProvider value={context}>
+      <FullPage>
+        <Browser></Browser>
+      </FullPage>
+    </WorkspaceProvider>
   );
 }
 
@@ -20,13 +28,13 @@ function FullPage({ children }) {
 }
 
 function Browser() {
-  const jsCode = useSelector((state) => state.workspace.preload);
+  const { preload } = useWorkspace();
 
   return (
     <WebBrowser
       defaultURL="https://google.com/"
       defaultTitle="New Tab "
-      jsCode={jsCode}
+      jsCode={preload}
     >
       <MainPage />
     </WebBrowser>

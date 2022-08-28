@@ -6,15 +6,11 @@ import {
   useCallback,
 } from 'react';
 import { nanoid } from 'nanoid';
-import { useDispatch, useSelector } from 'react-redux';
 import { createContext } from '../../hooks/context';
 import { defaultOption, toggleEditorOption } from './manacoOption';
 import { ipcRendererManager, useIpcRendererListener } from '../../ipc';
 import { IpcEvents } from '../../../ipcEvents';
-import {
-  start as startWorkspace,
-  stop as stopWorkspace,
-} from '../../workspace/execution';
+import { useWorkspace } from '../../workspace/useWorkspace';
 
 function getDefaultScript(filepath) {
   switch (filepath) {
@@ -66,7 +62,7 @@ export function useCodeEditors() {
   const [tabs, setTabs] = useState([]);
   const [monacoOption, setMonacoOption] = useState(defaultOption);
   const [activeTabKey, setActiveTabKey] = useState('');
-  const dispatch = useDispatch();
+  const { startAll, stopAll } = useWorkspace();
 
   useEffect(() => {
     initializeDefaultTabs();
@@ -105,11 +101,11 @@ export function useCodeEditors() {
 
   const start = async () => {
     await saveAll();
-    startWorkspace();
+    startAll();
   };
 
   const stop = async () => {
-    stopWorkspace();
+    stopAll();
   };
 
   const save = useCallback(
@@ -183,7 +179,7 @@ export function useToolbar() {
   const { tabs, activeTabKey, save, start, stop } = useCodeEditorsContext();
   const activeTab = tabs.find((tab) => tab.key === activeTabKey);
   const dirty = !!activeTab?.dirty;
-  const execution = useSelector((state) => state.workspace.execution);
+  const { execution } = useWorkspace();
 
   const saveCallback = useCallback(() => {
     save(activeTabKey);
