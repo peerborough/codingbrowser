@@ -1,7 +1,7 @@
 import { Allotment } from 'allotment';
 import ViewLayout from '../components/ViewLayout';
-import OutputUI from '../components/OutputUI';
-import OutputMessages from '../components/OutputMessages';
+import UserAppUI from '../components/UserAppUI';
+import UserAppMessages from '../components/UserAppMessages';
 
 export default function ({ visible }) {
   return (
@@ -11,8 +11,8 @@ export default function ({ visible }) {
         vertical={true}
         proportionalLayout={false}
       >
-        <OutputUI />
-        <OutputMessages />
+        <UserAppUI />
+        <UserAppMessages />
       </Allotment>
     </ViewLayout>
   );

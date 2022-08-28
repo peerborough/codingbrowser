@@ -3,7 +3,7 @@ import Chatbot from 'react-chatbot-kit';
 import config from './bot/config';
 import MessageParser from './bot/MessageParser';
 import ActionProvider from './bot/ActionProvider';
-import './OutputMessages.css';
+import './UserAppMessages.css';
 
 export default function ({ messages }) {
   return (
