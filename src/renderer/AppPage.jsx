@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import WebBrowser from './components/WebBrowser';
-import DevPane from './components/DevPane';
+import MainPage from './MainPage';
 
 export default function () {
   return (
@@ -28,7 +28,7 @@ function Browser() {
       defaultTitle="New Tab "
       jsCode={jsCode}
     >
-      <DevPane />
+      <MainPage />
     </WebBrowser>
   );
 }
