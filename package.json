@@ -101,7 +101,6 @@
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@monaco-editor/react": "^4.4.5",
-    "@reduxjs/toolkit": "^1.8.3",
     "@vscode/codicons": "^0.0.32",
     "allotment": "^1.15.0",
     "antd": "^4.22.7",
@@ -119,7 +118,6 @@
     "react-chatbot-kit": "^2.1.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
-    "react-redux": "^8.0.2",
     "react-router-dom": "^6.3.0",
     "use-resize-observer": "^9.0.2"
   },
