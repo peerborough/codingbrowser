@@ -1,5 +1,5 @@
 import { Allotment } from 'allotment';
-import DevView from './components/DevView';
+import DevView from './views/DevView';
 import { ActivityBar } from './components/ActivityBar';
 
 export default function () {

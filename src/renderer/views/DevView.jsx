@@ -1,7 +1,7 @@
 import { Allotment } from 'allotment';
-import CodePane from './CodePane';
-import DevToolsPane from './DevToolsPane';
-import { ActivityBar } from './ActivityBar';
+import CodePane from '../components/CodePane';
+import DevToolsPane from '../components/DevToolsPane';
+import { ActivityBar } from '../components/ActivityBar';
 
 export default function () {
   return (
