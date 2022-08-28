@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 import { useWorkspaceContext } from './useWorkspaceProvider';
+import { ipcRendererManager } from '../ipc';
+import { IpcEvents } from '../../ipcEvents';
 
 export function useWorkspace() {
   const {
