@@ -4,8 +4,8 @@ import MainPage from './MainPage';
 import {
   WorkspaceProvider,
   useWorkspaceProvider,
-  useWorkspace,
-} from './workspace/useWorkspace';
+} from './workspace/useWorkspaceProvider';
+import { useWorkspace } from './workspace/useWorkspace';
 
 export default function () {
   const context = useWorkspaceProvider();
