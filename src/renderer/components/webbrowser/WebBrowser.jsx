@@ -1,5 +1,4 @@
 import { useRef, useState, useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { Decode } from 'console-feed';
 import AddressBar from './AddressBar';
 import WebView from './WebView';
@@ -7,7 +6,7 @@ import { IpcEvents } from '../../../ipcEvents';
 import { ipcRendererManager, useIpcRendererListener } from '../../ipc';
 import usePrevious from 'renderer/hooks/usePrevious';
 import { useWebBrowser } from './useWebBrowsers';
-import { addLog } from '../../slices/consoleSlice';
+import useConsoleLog from '../../workspace/useConsoleLog';
 
 export default function ({ tabId }) {
   const webviewRef = useRef();
@@ -15,7 +14,7 @@ export default function ({ tabId }) {
     useWebBrowser({ tabId });
   const jsCodeRef = useRef(jsCode);
   const prevJsCode = usePrevious(jsCode);
-  const dispatch = useDispatch();
+  const { addConsoleLog } = useConsoleLog();
 
   const validateActiveTab = useCallback(
     (func) => {
@@ -108,7 +107,7 @@ export default function ({ tabId }) {
   }
 
   function handleConsoleMessage(log) {
-    dispatch(addLog(Decode(log)));
+    addConsoleLog(Decode(log));
   }
 
   function handleAddTab({ url }) {

@@ -12,6 +12,7 @@ export function useWorkspaceProvider() {
   const [preloadScript, setPreloadScript] = useState(null);
   const [mainScript, setMainScript] = useState(null);
   const [execution, setExecution] = useState('stop'); // 'stop', 'start'
+  const [consoleLogs, setConsoleLogs] = useState([]);
 
   const startWorkspace = (main, preload) => {
     setMainScript(main);
@@ -25,13 +26,19 @@ export function useWorkspaceProvider() {
     setExecution('stop');
   };
 
+  const addConsoleLog = (log) => {
+    setConsoleLogs((logs) => [...logs, log]);
+  };
+
   return {
     rootPath,
     mainScript,
     preloadScript,
     execution,
+    consoleLogs,
     startWorkspace,
     stopWorkspace,
+    addConsoleLog,
   };
 }
 

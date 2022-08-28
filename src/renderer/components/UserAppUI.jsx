@@ -1,15 +1,14 @@
 import { useRef, useState, useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { Decode } from 'console-feed';
 import useEventListener from '../hooks/useEventListener';
 import { useWorkspace } from '../workspace/useWorkspace';
-import { addLog } from '../slices/consoleSlice';
+import useConsoleLog from '../workspace/useConsoleLog';
 
 export default function () {
   const { mainScript } = useWorkspace();
   const jsCodeRef = useRef(mainScript);
   const [webview, setWebview] = useState();
-  const dispatch = useDispatch();
+  const { addConsoleLog } = useConsoleLog();
 
   useEffect(() => {
     jsCodeRef.current = mainScript;
@@ -44,7 +43,7 @@ export default function () {
   );
 
   function handleConsoleMessage(log) {
-    dispatch(addLog(Decode(log)));
+    addConsoleLog(Decode(log));
   }
 
   const webviewRef = useCallback((node) => {
