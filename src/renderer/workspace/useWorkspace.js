@@ -9,51 +9,62 @@ export const [WorkspaceProvider, useWorkspaceContext] = createContext({
 
 export function useWorkspaceProvider() {
   const [rootPath, setRootPath] = useState('memory://');
-  const [preload, setPreload] = useState(null);
+  const [preloadScript, setPreloadScript] = useState(null);
+  const [mainScript, setMainScript] = useState(null);
   const [execution, setExecution] = useState('stop'); // 'stop', 'start'
 
-  const startWorkspace = (preload) => {
+  const startWorkspace = (main, preload) => {
+    setMainScript(main);
+    setPreloadScript(preload);
     setExecution('start');
-    setPreload(preload);
   };
 
   const stopWorkspace = () => {
+    setMainScript(null);
+    setPreloadScript(null);
     setExecution('stop');
-    setPreload(null);
   };
 
   return {
     rootPath,
-    preload,
+    mainScript,
+    preloadScript,
     execution,
     startWorkspace,
     stopWorkspace,
-    setPreload,
   };
 }
 
 export function useWorkspace() {
-  const { rootPath, preload, execution, startWorkspace, stopWorkspace } =
-    useWorkspaceContext();
+  const {
+    rootPath,
+    mainScript,
+    preloadScript,
+    execution,
+    startWorkspace,
+    stopWorkspace,
+  } = useWorkspaceContext();
 
   const startAll = useCallback(async () => {
-    await startMain(rootPath);
-    await startPreload(rootPath);
+    const main = await getMainScript(rootPath);
+    const preload = await getPreloadScript(rootPath);
+    startWorkspace(main, preload);
   }, [rootPath]);
 
   const stopAll = async () => {
     stopWorkspace();
   };
 
-  const startMain = async (rootPath) => {
-    console.log('startMain');
+  const getMainScript = async (rootPath) => {
     let main = await ipcRendererManager.invoke(
       IpcEvents.LOAD_USER_FILE,
       `${rootPath}main.js`
     );
+
+    return main;
   };
 
-  const startPreload = async (rootPath) => {
+  const getPreloadScript = async (rootPath) => {
     let preload = await ipcRendererManager.invoke(
       IpcEvents.LOAD_USER_FILE,
       `${rootPath}preload.js`
@@ -62,11 +73,13 @@ export function useWorkspace() {
     if (preload !== null) {
       preload = `${preload};${suffixScript}`;
     }
-    startWorkspace(preload);
+
+    return preload;
   };
 
   return {
-    preload,
+    mainScript,
+    preloadScript,
     execution,
     startAll,
     stopAll,

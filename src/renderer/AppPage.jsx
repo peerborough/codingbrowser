@@ -28,13 +28,13 @@ function FullPage({ children }) {
 }
 
 function Browser() {
-  const { preload } = useWorkspace();
+  const { preloadScript } = useWorkspace();
 
   return (
     <WebBrowser
       defaultURL="https://google.com/"
       defaultTitle="New Tab "
-      jsCode={preload}
+      jsCode={preloadScript}
     >
       <MainPage />
     </WebBrowser>
