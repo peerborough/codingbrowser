@@ -6,6 +6,9 @@ contextBridge.exposeInMainWorld('_codingbrowser', {
   getWebviewPreloadPath: () => {
     return path.join(__dirname, 'wvpreload.js');
   },
+  getWebviewUserAppPreloadPath: () => {
+    return path.join(__dirname, 'uapreload.js');
+  },
 
   ipcRenderer: {
     send(channel: IpcEvents, ...args: Array<any>) {
