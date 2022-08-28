@@ -16,3 +16,7 @@
   width: auto !important;
   max-width: 70% !important;
 }
+
+.react-chatbot-kit-chat-btn-send {
+  border-bottom-right-radius: 0px !important;
+}
