@@ -1,11 +1,15 @@
 import { useRef, useState, useCallback, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { Decode } from 'console-feed';
 import useEventListener from '../hooks/useEventListener';
 import { useWorkspace } from '../workspace/useWorkspace';
+import { addLog } from '../slices/consoleSlice';
 
 export default function () {
   const { mainScript } = useWorkspace();
   const jsCodeRef = useRef(mainScript);
   const [webview, setWebview] = useState();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     jsCodeRef.current = mainScript;
@@ -18,6 +22,9 @@ export default function () {
     switch (channel) {
       case 'preload-ready':
         handlePreloadReady(frameId);
+        break;
+      case 'console-message':
+        handleConsoleMessage(...args);
         break;
       default:
         console.error('Invalid channel', channel);
@@ -35,6 +42,10 @@ export default function () {
     },
     [webview]
   );
+
+  function handleConsoleMessage(log) {
+    dispatch(addLog(Decode(log)));
+  }
 
   const webviewRef = useCallback((node) => {
     setWebview(node);
