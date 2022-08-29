@@ -4,6 +4,7 @@ import {
   useLayoutEffect,
   useState,
   useCallback,
+  useMemo,
 } from 'react';
 import { nanoid } from 'nanoid';
 import { createContext } from '../../hooks/context';
@@ -18,7 +19,7 @@ function getDefaultScript(filepath) {
     case 'memory://preload.js':
       return `/**
  *
- *  A script that will be loaded for every frame
+ *  A script that will be injected into every frame
  *
  */
 
@@ -39,6 +40,11 @@ function onReady({ url }) {
 const { output }  = window.codingbrowser;
 
 `;
+    case 'package.json':
+    case 'memory://package.json':
+      return `{
+    "name": "My Awesome App",
+}`;
   }
 }
 
@@ -46,11 +52,12 @@ function makeId() {
   return nanoid();
 }
 
-const createTab = ({ title, filepath }) => ({
+const createTab = ({ title, filepath, language }) => ({
   key: makeId(),
   dirty: false,
   title: title,
   filepath: filepath,
+  language: language,
 });
 
 export const [CodeEditorsProvider, useCodeEditorsContext] = createContext({
@@ -80,10 +87,17 @@ export function useCodeEditors() {
       createTab({
         title: 'preload.js',
         filepath: 'memory://preload.js',
+        language: 'javascript',
       }),
       createTab({
         title: 'main.js',
         filepath: 'memory://main.js',
+        language: 'javascript',
+      }),
+      createTab({
+        title: 'package.json',
+        filepath: 'memory://package.json',
+        language: 'json',
       }),
     ];
     setTabs(defaultTabs);
@@ -194,8 +208,13 @@ export function useCodeEditorTabs() {
 }
 
 export function useCodeEditor({ tabKey, ref }) {
-  const { monacoOption, setDirty, load, register, unregister } =
+  const { tabs, monacoOption, setDirty, load, register, unregister } =
     useCodeEditorsContext();
+
+  const { filepath, language } = useMemo(() => {
+    const tab = tabs?.find((tab) => tab.key === tabKey);
+    return { filepath: tab?.filepath, language: tab?.language };
+  }, [tabs, tabKey]);
 
   useLayoutEffect(() => {
     register(tabKey, ref);
@@ -212,6 +231,8 @@ export function useCodeEditor({ tabKey, ref }) {
   const loadCallback = useCallback(async () => await load(tabKey), [tabKey]);
 
   return {
+    filepath,
+    language,
     monacoOption,
     load: loadCallback,
     setDirty: setDirtyCallback,

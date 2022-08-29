@@ -7,7 +7,7 @@ export default function CodeEditor({ tabKey }) {
   const containerRef = useRef(null);
   const [editor, setEditor] = useState(null);
   const [value, setValue] = useState(null);
-  const { monacoOption, load, setDirty } = useCodeEditor({
+  const { filepath, language, monacoOption, load, setDirty } = useCodeEditor({
     tabKey,
     ref: editor,
   });
@@ -46,7 +46,8 @@ export default function CodeEditor({ tabKey }) {
       <Editor
         width={width}
         height={height}
-        defaultLanguage="javascript"
+        path={filepath}
+        defaultLanguage={language}
         options={monacoOption}
         value={value}
         onMount={handleEditorDidMount}
