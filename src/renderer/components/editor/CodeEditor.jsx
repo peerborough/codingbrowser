@@ -46,7 +46,6 @@ export default function CodeEditor({ tabKey }) {
   }
 
   const handleChange = async (newValue, event) => {
-    console.log(event);
     const versionId = event.versionId;
     const pervVersionId = versionRef.current;
 
