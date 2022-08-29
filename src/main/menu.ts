@@ -169,6 +169,14 @@ function getFileMenu(): MenuItemConstructorOptions {
       click: () => createMainWindow(),
       accelerator: 'CmdOrCtrl+Shift+N',
     },
+    { type: 'separator' },
+    {
+      label: 'Save',
+      click: () => {
+        return ipcMainManager.send(IpcEvents.MONACO_SAVE_FILE);
+      },
+      accelerator: 'CmdOrCtrl+S',
+    },
   ];
 
   // macOS has these items in the "CodingBrowser" menu

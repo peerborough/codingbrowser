@@ -3,12 +3,16 @@ import { useWorkspaceContext } from './useWorkspaceProvider';
 import { ipcRendererManager } from '../ipc';
 import { IpcEvents } from '../../ipcEvents';
 
+export { activityItems, activeItemToIndex } from './useWorkspaceProvider';
+
 export function useWorkspace() {
   const {
     rootPath,
     mainScript,
     preloadScript,
     execution,
+    activityIndex,
+    setActivityIndex,
     startWorkspace,
     stopWorkspace,
   } = useWorkspaceContext();
@@ -49,8 +53,10 @@ export function useWorkspace() {
     mainScript,
     preloadScript,
     execution,
+    activityIndex,
     startAll,
     stopAll,
+    setActivityIndex,
   };
 }
 

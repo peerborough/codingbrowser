@@ -7,18 +7,10 @@ import {
 import { useToolbar } from './useCodeEditors';
 
 export default function () {
-  const { dirty, execution, save, start, stop } = useToolbar();
+  const { dirty, save } = useToolbar();
 
   const handleSave = async () => {
     save();
-  };
-
-  const hanedleStart = async () => {
-    start();
-  };
-
-  const handleStop = async () => {
-    stop();
   };
 
   return (
@@ -29,27 +21,6 @@ export default function () {
         }}
       >
         <Col flex="300px" style={{ padding: 1 }}>
-          {execution === 'start' ? (
-            <Button
-              type="text"
-              icon={<StopOutlined style={{ color: '#cc0000' }} />}
-              size="middle"
-              style={{ color: '#525252', fontWeight: 'normal' }}
-              onClick={handleStop}
-            >
-              Stop
-            </Button>
-          ) : (
-            <Button
-              type="text"
-              icon={<PlayCircleOutlined style={{ color: 'green' }} />}
-              size="middle"
-              style={{ color: '#525252', fontWeight: 'normal' }}
-              onClick={hanedleStart}
-            >
-              Start
-            </Button>
-          )}
           <Button
             type="text"
             icon={<SaveOutlined />}

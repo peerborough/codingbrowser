@@ -5,12 +5,18 @@ export const [WorkspaceProvider, useWorkspaceContext] = createContext({
   name: 'WorkspaceContext',
 });
 
+export const activityItems = ['home', 'play', 'files'];
+export const activeItemToIndex = (name) => activityItems.indexOf(name);
+
 export function useWorkspaceProvider() {
   const [rootPath, setRootPath] = useState('memory://');
   const [preloadScript, setPreloadScript] = useState(null);
   const [mainScript, setMainScript] = useState(null);
   const [execution, setExecution] = useState('stop'); // 'stop', 'start'
   const [consoleLogs, setConsoleLogs] = useState([]);
+  const [activityIndex, setActivityIndex] = useState(
+    activeItemToIndex('files')
+  );
 
   const startWorkspace = (main, preload) => {
     setMainScript(main);
@@ -34,8 +40,10 @@ export function useWorkspaceProvider() {
     preloadScript,
     execution,
     consoleLogs,
+    activityIndex,
     startWorkspace,
     stopWorkspace,
     addConsoleLog,
+    setActivityIndex,
   };
 }

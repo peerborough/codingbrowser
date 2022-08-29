@@ -4,7 +4,7 @@ import { createContext } from '../../hooks/context';
 import { defaultOption, toggleEditorOption } from './manacoOption';
 import { ipcRendererManager, useIpcRendererListener } from '../../ipc';
 import { IpcEvents } from '../../../ipcEvents';
-import { useWorkspace } from '../../workspace/useWorkspace';
+import { activeItemToIndex, useWorkspace } from '../../workspace/useWorkspace';
 
 function getDefaultScript(filepath) {
   switch (filepath) {
@@ -62,7 +62,7 @@ export function useCodeEditors() {
   const [tabs, setTabs] = useState([]);
   const [monacoOption, setMonacoOption] = useState(defaultOption);
   const [activeTabKey, setActiveTabKey] = useState('');
-  const { startAll, stopAll } = useWorkspace();
+  const { startAll, stopAll, activityIndex } = useWorkspace();
 
   useEffect(() => {
     initializeDefaultTabs();
@@ -74,6 +74,15 @@ export function useCodeEditors() {
       setMonacoOption(newOption);
     }
   });
+
+  useIpcRendererListener(
+    IpcEvents.MONACO_SAVE_FILE,
+    useCallback(() => {
+      if (activeItemToIndex('files') === activityIndex) {
+        save(activeTabKey);
+      }
+    }, [activityIndex, activeTabKey])
+  );
 
   const initializeDefaultTabs = () => {
     const defaultTabs = [
@@ -104,15 +113,6 @@ export function useCodeEditors() {
       );
       return updated;
     });
-  };
-
-  const start = async () => {
-    await saveAll();
-    startAll();
-  };
-
-  const stop = async () => {
-    stopAll();
   };
 
   const save = useCallback(
@@ -173,8 +173,6 @@ export function useCodeEditors() {
     activeTabKey,
     setActiveTabKey,
     setDirty,
-    start,
-    stop,
     save,
     load,
     register,
@@ -183,16 +181,15 @@ export function useCodeEditors() {
 }
 
 export function useToolbar() {
-  const { tabs, activeTabKey, save, start, stop } = useCodeEditorsContext();
+  const { tabs, activeTabKey, save } = useCodeEditorsContext();
   const activeTab = tabs.find((tab) => tab.key === activeTabKey);
   const dirty = !!activeTab?.dirty;
-  const { execution } = useWorkspace();
 
   const saveCallback = useCallback(() => {
     save(activeTabKey);
   }, [activeTabKey]);
 
-  return { dirty, execution, save: saveCallback, start, stop };
+  return { dirty, save: saveCallback };
 }
 
 export function useCodeEditorTabs() {
