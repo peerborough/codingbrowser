@@ -7,11 +7,7 @@ import { ActivityBar } from '../components/ActivityBar';
 export default function ({ visible }) {
   return (
     <ViewLayout visible={visible}>
-      <Allotment
-        defaultSizes={[600, 400]}
-        vertical={true}
-        proportionalLayout={false}
-      >
+      <Allotment defaultSizes={[600, 400]} vertical={true}>
         <CodePane />
         <DevToolsPane />
       </Allotment>
