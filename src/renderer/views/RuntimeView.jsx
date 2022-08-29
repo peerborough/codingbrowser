@@ -4,6 +4,7 @@ import ViewLayout from '../components/ViewLayout';
 import UserAppUI from '../components/UserAppUI';
 import UserAppMessages from '../components/UserAppMessages';
 import Toolbar from '../components/Toolbar';
+import { useWorkspace } from '../workspace/useWorkspace';
 
 const { Text } = Typography;
 
@@ -26,6 +27,16 @@ export default function ({ visible }) {
 }
 
 function RuntimeViewToolbar() {
+  const { startAll, stopAll } = useWorkspace();
+
+  const handleSwitch = (checked) => {
+    if (checked) {
+      startAll();
+    } else {
+      stopAll();
+    }
+  };
+
   return (
     <Toolbar>
       <Col>
@@ -36,7 +47,7 @@ function RuntimeViewToolbar() {
       <Col flex="auto"></Col>
       <Col>
         <Space align="center" style={{ height: '100%' }}>
-          <Switch defaultChecked></Switch>
+          <Switch defaultChecked onChange={handleSwitch}></Switch>
         </Space>
       </Col>
     </Toolbar>
