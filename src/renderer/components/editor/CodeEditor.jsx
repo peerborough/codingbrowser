@@ -5,19 +5,39 @@ import { useCodeEditor } from './useCodeEditors';
 
 export default function CodeEditor({ tabKey }) {
   const containerRef = useRef(null);
-  const [editor, setEditor] = useState(null);
-  const [value, setValue] = useState(null);
-  const { filepath, language, monacoOption, load, setDirty } = useCodeEditor({
+  const editorRef = useRef(null);
+  const versionRef = useRef(-1);
+  const [mounted, setMounted] = useState(false);
+  const {
+    filepath,
+    language,
+    monacoOption,
+    register,
+    unregister,
+    load,
+    setDirty,
+    isDifferentWithSavedValue,
+  } = useCodeEditor({
     tabKey,
-    ref: editor,
   });
   const { width, height } = useResizeObserver({
     ref: containerRef,
     round: Math.floor,
   });
 
+  useEffect(() => {
+    if (tabKey && mounted) {
+      register(tabKey, editorRef.current);
+    }
+
+    return () => {
+      unregister(tabKey);
+    };
+  }, [tabKey, mounted]);
+
   function handleEditorDidMount(editor, monaco) {
-    setEditor(editor);
+    editorRef.current = editor;
+    setMounted(true);
     load().then((value) => {
       if (value) {
         editor.setValue(value);
@@ -25,15 +45,20 @@ export default function CodeEditor({ tabKey }) {
     });
   }
 
-  const handleChange = useCallback(
-    (newValue) => {
-      if (value !== null) {
-        setDirty(true);
-      }
-      setValue(newValue);
-    },
-    [value]
-  );
+  const handleChange = async (newValue, event) => {
+    console.log(event);
+    const versionId = event.versionId;
+    const pervVersionId = versionRef.current;
+
+    versionRef.current = versionId;
+
+    if (event.isUndoing || event.isRedoing) {
+      const modified = await isDifferentWithSavedValue(newValue);
+      setDirty(modified);
+    } else if (versionId >= 3 && versionId !== pervVersionId) {
+      setDirty(true);
+    }
+  };
 
   return (
     <div
@@ -49,7 +74,6 @@ export default function CodeEditor({ tabKey }) {
         path={filepath}
         defaultLanguage={language}
         options={monacoOption}
-        value={value}
         onMount={handleEditorDidMount}
         onChange={handleChange}
       />

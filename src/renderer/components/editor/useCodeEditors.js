@@ -1,11 +1,4 @@
-import {
-  useRef,
-  useEffect,
-  useLayoutEffect,
-  useState,
-  useCallback,
-  useMemo,
-} from 'react';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { nanoid } from 'nanoid';
 import { createContext } from '../../hooks/context';
 import { defaultOption, toggleEditorOption } from './manacoOption';
@@ -207,7 +200,7 @@ export function useCodeEditorTabs() {
   return { tabs, setActiveTabKey };
 }
 
-export function useCodeEditor({ tabKey, ref }) {
+export function useCodeEditor({ tabKey }) {
   const { tabs, monacoOption, setDirty, load, register, unregister } =
     useCodeEditorsContext();
 
@@ -216,13 +209,6 @@ export function useCodeEditor({ tabKey, ref }) {
     return { filepath: tab?.filepath, language: tab?.language };
   }, [tabs, tabKey]);
 
-  useLayoutEffect(() => {
-    register(tabKey, ref);
-    return () => {
-      unregister(tabKey);
-    };
-  }, [tabKey, ref]);
-
   const setDirtyCallback = useCallback(
     (value) => setDirty(tabKey, value),
     [tabKey]
@@ -230,11 +216,22 @@ export function useCodeEditor({ tabKey, ref }) {
 
   const loadCallback = useCallback(async () => await load(tabKey), [tabKey]);
 
+  const isDifferentWithSavedValue = useCallback(
+    async (value) => {
+      const savedValue = await load(tabKey);
+      return savedValue !== value;
+    },
+    [tabKey]
+  );
+
   return {
     filepath,
     language,
     monacoOption,
+    register,
+    unregister,
     load: loadCallback,
     setDirty: setDirtyCallback,
+    isDifferentWithSavedValue,
   };
 }
