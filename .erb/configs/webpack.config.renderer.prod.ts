@@ -119,7 +119,7 @@ const configuration: webpack.Configuration = {
     }),
 
     new MonacoWebpackPlugin({
-      languages: ['typescript', 'javascript', 'html', 'css'],
+      languages: ['typescript', 'javascript', 'html', 'css', 'json'],
     }),
   ],
 };
