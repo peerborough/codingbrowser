@@ -10,9 +10,6 @@ import {
   useWorkspace,
 } from './workspace/useWorkspace';
 
-const activityItems = ['home', 'play', 'files'];
-const activeItemToIndex = (name) => activityItems.indexOf(name);
-
 export default function () {
   const { activityIndex, setActivityIndex } = useWorkspace();
 
