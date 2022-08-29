@@ -56,7 +56,7 @@ export default function () {
     <div style={{ width: '100%', height: '100%' }}>
       <webview
         ref={webviewRef}
-        src="data:text/html,<html><body>Hello World</body></html>"
+        src="data:text/html,<html><body>User APP</body></html>"
         style={{ width: '100%', height: '100%' }}
         preload={`file://${window._codingbrowser.getWebviewUserAppPreloadPath()}`}
       ></webview>
