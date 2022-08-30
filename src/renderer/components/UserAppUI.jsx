@@ -6,16 +6,13 @@ import useConsoleLog from '../workspace/useConsoleLog';
 
 export default function () {
   const { workspace, scriptVersionId } = useWorkspace();
-  const [webview, setWebview] = useState();
+  const webviewRef = useRef(null);
   const [attached, setAttached] = useState(false);
   const { addConsoleLog } = useConsoleLog();
-  const webviewRef = useCallback((node) => {
-    setWebview(node);
-  }, []);
 
   useEffect(() => {
-    if (workspace?.enabled && webview && attached) {
-      webview?.reload();
+    if (workspace?.enabled && webviewRef.current && attached) {
+      webviewRef.current?.reload();
     }
   }, [scriptVersionId, workspace?.enabled, attached]);
 
@@ -31,15 +28,15 @@ export default function () {
 
   const handleDidAttach = () => {
     setAttached(true);
-    //webview.openDevTools();
+    //webviewRef.current.openDevTools();
   };
 
   function handleConsoleMessage(log) {
     addConsoleLog(Decode(log));
   }
 
-  useEventListener(webview, 'ipc-message', handleIpcMessage);
-  useEventListener(webview, 'did-attach', handleDidAttach);
+  useEventListener(webviewRef, 'ipc-message', handleIpcMessage);
+  useEventListener(webviewRef, 'did-attach', handleDidAttach);
 
   return (
     <div style={{ width: '100%', height: '100%' }}>

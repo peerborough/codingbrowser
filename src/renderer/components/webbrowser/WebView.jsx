@@ -13,48 +13,48 @@ import { sleep } from '../../util';
 function WebView({ tabId, onIpcMessage }, ref) {
   const { defaultURL, updateTab } = useWebView({ tabId });
   const [isDomReady, setDomReady] = useState(false);
-  const [webview, setWebview] = useState();
+  const webviewRef = useRef(null);
 
   useImperativeHandle(
     ref,
     () => ({
       loadURL: async (url, options) => {
         try {
-          return await webview?.loadURL(url, options);
+          return await webviewRef.current?.loadURL(url, options);
         } catch (e) {
           console.info(e);
         }
       },
       goBack: () => {
-        return webview?.goBack();
+        return webviewRef.current?.goBack();
       },
       goForward: () => {
-        return webview?.goForward();
+        return webviewRef.current?.goForward();
       },
       reload: () => {
-        return webview?.reload();
+        return webviewRef.current?.reload();
       },
       stop: () => {
-        return webview?.stop();
+        return webviewRef.current?.stop();
       },
       canGoBack: () => {
-        return webview?.canGoBack();
+        return webviewRef.current?.canGoBack();
       },
       canGoForward: () => {
-        return webview?.canGoForward();
+        return webviewRef.current?.canGoForward();
       },
       openDevTools: async () => {
         // TODO: use message queue instead
         if (!isDomReady) await sleep(300);
-        webview?.openDevTools();
+        webviewRef.current?.openDevTools();
       },
       closeDevTools: async () => {
         // TODO: use message queue instead
         if (!isDomReady) await sleep(300);
-        webview?.closeDevTools();
+        webviewRef.current?.closeDevTools();
       },
       sendToFrame: (frameId, channel, ...args) => {
-        return webview?.sendToFrame(frameId, channel, ...args);
+        return webviewRef.current?.sendToFrame(frameId, channel, ...args);
       },
     }),
     [isDomReady]
@@ -73,7 +73,7 @@ function WebView({ tabId, onIpcMessage }, ref) {
   };
 
   const handleStopLoading = () => {
-    updateTab(tabId, { url: webview.getURL(), loading: false });
+    updateTab(tabId, { url: webviewRef.current.getURL(), loading: false });
   };
 
   const handleFailure = (event) => {
@@ -85,8 +85,8 @@ function WebView({ tabId, onIpcMessage }, ref) {
 
   const handleDidStartNavigate = () => {
     updateTab(tabId, {
-      canGoBack: webview.canGoBack(),
-      canGoForward: webview.canGoForward(),
+      canGoBack: webviewRef.current.canGoBack(),
+      canGoForward: webviewRef.current.canGoForward(),
     });
   };
 
@@ -98,20 +98,16 @@ function WebView({ tabId, onIpcMessage }, ref) {
     updateTab(tabId, { title });
   };
 
-  const webviewRef = useCallback((node) => {
-    setWebview(node);
-  }, []);
-
-  useEventListener(webview, 'ipc-message', onIpcMessage);
-  useEventListener(webview, 'dom-ready', handleDomReady);
-  useEventListener(webview, 'will-navigate', handleChangeURL);
-  useEventListener(webview, 'did-start-loading', handleStartLoading);
-  useEventListener(webview, 'did-stop-loading', handleStopLoading);
-  useEventListener(webview, 'did-finish-load', handleStopLoading);
-  useEventListener(webview, 'did-start-navigation', handleDidStartNavigate);
-  useEventListener(webview, 'did-fail-load', handleFailure);
-  useEventListener(webview, 'did-attach', handleDidAttach);
-  useEventListener(webview, 'page-title-updated', handlePageTitleUpdated);
+  useEventListener(webviewRef, 'ipc-message', onIpcMessage);
+  useEventListener(webviewRef, 'dom-ready', handleDomReady);
+  useEventListener(webviewRef, 'will-navigate', handleChangeURL);
+  useEventListener(webviewRef, 'did-start-loading', handleStartLoading);
+  useEventListener(webviewRef, 'did-stop-loading', handleStopLoading);
+  useEventListener(webviewRef, 'did-finish-load', handleStopLoading);
+  useEventListener(webviewRef, 'did-start-navigation', handleDidStartNavigate);
+  useEventListener(webviewRef, 'did-fail-load', handleFailure);
+  useEventListener(webviewRef, 'did-attach', handleDidAttach);
+  useEventListener(webviewRef, 'page-title-updated', handlePageTitleUpdated);
 
   return (
     <webview

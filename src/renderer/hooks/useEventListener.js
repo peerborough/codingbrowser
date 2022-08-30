@@ -9,15 +9,22 @@ export default function useEventListener(emitter, eventName, handler, options) {
 
   useEffect(
     () => {
-      const isSupported = emitter && emitter.addEventListener;
-      if (!isSupported) return;
+      let localEmitter = emitter?.current;
+      let isSupported = localEmitter && localEmitter.addEventListener;
+      if (!isSupported) {
+        localEmitter = emitter;
+        isSupported = localEmitter && localEmitter.addEventListener;
+      }
+      if (!isSupported) {
+        return;
+      }
 
       const eventListener = (event) =>
         savedHandler.current && savedHandler.current(event);
-      emitter.addEventListener(eventName, eventListener, options);
+      localEmitter.addEventListener(eventName, eventListener, options);
 
       return () => {
-        emitter.removeEventListener(eventName, eventListener);
+        localEmitter.removeEventListener(eventName, eventListener);
       };
     },
     [eventName, emitter] // Re-run if eventName or emitter changes
