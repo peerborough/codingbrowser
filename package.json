@@ -119,7 +119,8 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0",
-    "use-resize-observer": "^9.0.2"
+    "use-resize-observer": "^9.0.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.6",
