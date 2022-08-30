@@ -5,7 +5,7 @@ import { defaultOption, toggleEditorOption } from './manacoOption';
 import { ipcRendererManager, useIpcRendererListener } from '../../ipc';
 import { IpcEvents } from '../../../ipcEvents';
 import { activeViewToIndex, useWorkspace } from '../../workspace/useWorkspace';
-import { useWorkspaceProvider } from '../../workspace/useWorkspaceProvider';
+import { useWorkspace } from '../../workspace/useWorkspace';
 
 function makeId() {
   return nanoid();

@@ -1,4 +1,4 @@
-import { useWorkspaceContext } from './useWorkspaceProvider';
+import { useWorkspaceContext } from './useWorkspace';
 
 export default function () {
   const { consoleLogs, addConsoleLog } = useWorkspaceContext();
