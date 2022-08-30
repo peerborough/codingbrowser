@@ -4,53 +4,19 @@ import { createContext } from '../../hooks/context';
 import { defaultOption, toggleEditorOption } from './manacoOption';
 import { ipcRendererManager, useIpcRendererListener } from '../../ipc';
 import { IpcEvents } from '../../../ipcEvents';
-import { activeItemToIndex, useWorkspace } from '../../workspace/useWorkspace';
-
-function getDefaultScript(filepath) {
-  switch (filepath) {
-    case 'preload.js':
-    case 'memory://preload.js':
-      return `/**
- *
- *  A script that will be injected into every frame
- *
- */
-
-// Called whenever DOM content for each frame has been loaded
-function onReady({ url }) {
-  console.log(\`onReady( "\${ url }" )\`);
-
-}
-`;
-    case 'main.js':
-    case 'memory://main.js':
-      return `/**
- *
- *  A script for the main application
- *
- */
-
-const { output }  = window.codingbrowser;
-
-`;
-    case 'package.json':
-    case 'memory://package.json':
-      return `{
-    "name": "My Awesome App",
-}`;
-  }
-}
+import { activeViewToIndex, useWorkspace } from '../../workspace/useWorkspace';
+import { useWorkspaceProvider } from '../../workspace/useWorkspaceProvider';
 
 function makeId() {
   return nanoid();
 }
 
-const createTab = ({ title, filepath, language }) => ({
+const createTab = ({ title, language, ...props }) => ({
   key: makeId(),
   dirty: false,
   title: title,
-  filepath: filepath,
   language: language,
+  ...props,
 });
 
 export const [CodeEditorsProvider, useCodeEditorsContext] = createContext({
@@ -62,11 +28,13 @@ export function useCodeEditors() {
   const [tabs, setTabs] = useState([]);
   const [monacoOption, setMonacoOption] = useState(defaultOption);
   const [activeTabKey, setActiveTabKey] = useState('');
-  const { startAll, stopAll, activityIndex } = useWorkspace();
+  const { workspace, restart, activityIndex } = useWorkspace();
 
   useEffect(() => {
-    initializeDefaultTabs();
-  }, []);
+    if (workspace?.id) {
+      initializeDefaultTabs(workspace.openFiles);
+    }
+  }, [workspace?.id]);
 
   useIpcRendererListener(IpcEvents.MONACO_TOGGLE_OPTION, (cmd) => {
     const newOption = toggleEditorOption(monacoOption, cmd);
@@ -78,30 +46,21 @@ export function useCodeEditors() {
   useIpcRendererListener(
     IpcEvents.MONACO_SAVE_FILE,
     useCallback(() => {
-      if (activeItemToIndex('files') === activityIndex) {
+      if (activeViewToIndex('files') === activityIndex) {
         save(activeTabKey);
       }
     }, [activityIndex, activeTabKey])
   );
 
-  const initializeDefaultTabs = () => {
-    const defaultTabs = [
+  const initializeDefaultTabs = (openFiles) => {
+    const defaultTabs = openFiles.map((file) =>
       createTab({
-        title: 'preload.js',
-        filepath: 'memory://preload.js',
+        title: file.name,
         language: 'javascript',
-      }),
-      createTab({
-        title: 'main.js',
-        filepath: 'memory://main.js',
-        language: 'javascript',
-      }),
-      createTab({
-        title: 'package.json',
-        filepath: 'memory://package.json',
-        language: 'json',
-      }),
-    ];
+        ...file,
+      })
+    );
+
     setTabs(defaultTabs);
     setActiveTabKey(defaultTabs[0].key);
   };
@@ -124,11 +83,12 @@ export function useCodeEditors() {
       const value = editorRefs.current[tabKey].getValue();
 
       await ipcRendererManager.invoke(
-        IpcEvents.SAVE_USER_FILE,
-        tab.filepath,
+        IpcEvents.SAVE_TEXT_FILE,
+        tab.localPath,
         value
       );
       setDirty(tabKey, false);
+      restart();
     },
     [tabs]
   );
@@ -142,15 +102,12 @@ export function useCodeEditors() {
   const load = useCallback(
     async (tabKey) => {
       const tab = tabs.find((tab) => tab.key === tabKey);
-      if (!tab || !tab.filepath) return;
+      if (!tab || !tab.localPath) return;
 
       let value = await ipcRendererManager.invoke(
-        IpcEvents.LOAD_USER_FILE,
-        tab.filepath
+        IpcEvents.LOAD_TEXT_FILE,
+        tab.localPath
       );
-      if (value === null) {
-        value = getDefaultScript(tab.filepath);
-      }
       setDirty(tabKey, false);
       return value;
     },
@@ -201,9 +158,9 @@ export function useCodeEditor({ tabKey }) {
   const { tabs, monacoOption, setDirty, load, register, unregister } =
     useCodeEditorsContext();
 
-  const { filepath, language } = useMemo(() => {
+  const { language } = useMemo(() => {
     const tab = tabs?.find((tab) => tab.key === tabKey);
-    return { filepath: tab?.filepath, language: tab?.language };
+    return { language: tab?.language || 'javascript' };
   }, [tabs, tabKey]);
 
   const setDirtyCallback = useCallback(
@@ -222,7 +179,6 @@ export function useCodeEditor({ tabKey }) {
   );
 
   return {
-    filepath,
     language,
     monacoOption,
     register,

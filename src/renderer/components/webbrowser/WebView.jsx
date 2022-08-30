@@ -90,6 +90,10 @@ function WebView({ tabId, onIpcMessage }, ref) {
     });
   };
 
+  const handleDidAttach = () => {
+    updateTab(tabId, { attached: true });
+  };
+
   const handlePageTitleUpdated = ({ title }) => {
     updateTab(tabId, { title });
   };
@@ -106,6 +110,7 @@ function WebView({ tabId, onIpcMessage }, ref) {
   useEventListener(webview, 'did-finish-load', handleStopLoading);
   useEventListener(webview, 'did-start-navigation', handleDidStartNavigate);
   useEventListener(webview, 'did-fail-load', handleFailure);
+  useEventListener(webview, 'did-attach', handleDidAttach);
   useEventListener(webview, 'page-title-updated', handlePageTitleUpdated);
 
   return (

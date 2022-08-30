@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Col, Typography, Switch, Space } from 'antd';
 import { Allotment } from 'allotment';
 import ViewLayout from '../components/ViewLayout';
@@ -27,27 +28,23 @@ export default function ({ visible }) {
 }
 
 function RuntimeViewToolbar() {
-  const { startAll, stopAll } = useWorkspace();
+  const { enableWorkspace, workspace } = useWorkspace();
 
   const handleSwitch = (checked) => {
-    if (checked) {
-      startAll();
-    } else {
-      stopAll();
-    }
+    enableWorkspace(checked);
   };
 
   return (
     <Toolbar>
       <Col>
         <Space align="center" style={{ height: '100%' }}>
-          <Text>My Awesome App</Text>
+          <Text>Default App</Text>
         </Space>
       </Col>
       <Col flex="auto"></Col>
       <Col>
         <Space align="center" style={{ height: '100%' }}>
-          <Switch defaultChecked onChange={handleSwitch}></Switch>
+          <Switch checked={workspace?.enabled} onChange={handleSwitch}></Switch>
         </Space>
       </Col>
     </Toolbar>

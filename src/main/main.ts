@@ -9,15 +9,20 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 
-import { app } from 'electron';
+import { app, ipcMain } from 'electron';
 //import { autoUpdater } from 'electron-updater';
 //import log from 'electron-log';
-import Store from 'electron-store';
 import { IpcEvents } from '../ipcEvents';
 import { ipcMainManager } from './ipc';
 import { setupDevTools } from './devtools';
 import { getOrCreateMainWindow } from './windows';
-import { saveMemoryFile, loadMemoryFile } from './memoryfile';
+import {
+  initializeWorkspace,
+  getCurrentWorkspace,
+  enableWorkspace,
+} from './workspace';
+import { getStoreValue, setStoreValue } from './store';
+import { loadTextFile, saveTextFile } from './util';
 
 // class AppUpdater {
 //   constructor() {
@@ -28,7 +33,6 @@ import { saveMemoryFile, loadMemoryFile } from './memoryfile';
 // }
 
 let argv: string[] = [];
-const store = new Store();
 
 async function onReady() {
   //  await onFirstRunMaybe();
@@ -38,8 +42,7 @@ async function onReady() {
   //  const { setupFileListeners } = await import('./files');
   setupMenu();
   setupMenuHandler();
-  setupStoreHandler();
-  setupUserFileHandler();
+  setupWorkspaceHandler();
   //  setupProtocolHandler();
   //  setupFileListeners();
   // eslint-disable-next-line
@@ -65,32 +68,26 @@ function setupMenuHandler() {
   );
 }
 
-function setupStoreHandler() {
-  ipcMainManager.handle(IpcEvents.GET_STORE_VALUE, async (_, key) => {
-    const value = store.get(key);
-    return value;
-  });
-  ipcMainManager.handle(IpcEvents.SET_STORE_VALUE, async (_, key, value) => {
-    store.set(key, value);
-  });
-}
+function setupWorkspaceHandler() {
+  initializeWorkspace();
 
-function setupUserFileHandler() {
-  ipcMainManager.handle(IpcEvents.LOAD_USER_FILE, async (_, filepath) => {
-    if (filepath.startsWith('memory://')) {
-      return loadMemoryFile(filepath);
-    } else {
-      console.error('Not impmemented protocol');
-    }
+  ipcMainManager.handle(IpcEvents.LOAD_TEXT_FILE, async (_, filePath) => {
+    return loadTextFile(filePath);
   });
   ipcMainManager.handle(
-    IpcEvents.SAVE_USER_FILE,
-    async (_, filepath, value) => {
-      if (filepath.startsWith('memory://')) {
-        return saveMemoryFile(filepath, value);
-      } else {
-        console.error('Not impmemented protocol');
-      }
+    IpcEvents.SAVE_TEXT_FILE,
+    async (_, filePath, value) => {
+      saveTextFile(filePath, value);
+    }
+  );
+  ipcMainManager.handle(IpcEvents.GET_CURRENT_WORKSPACE, async (_) => {
+    return getCurrentWorkspace();
+  });
+
+  ipcMainManager.handle(
+    IpcEvents.ENABLE_WORKSPACE,
+    async (_, workspaceId, value) => {
+      return enableWorkspace(workspaceId, value);
     }
   );
 }

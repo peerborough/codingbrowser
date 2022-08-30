@@ -5,8 +5,8 @@ import DevView from './views/DevView';
 import RuntimeView from './views/RuntimeView';
 import { ActivityBar } from './components/ActivityBar';
 import {
-  activityItems,
-  activeItemToIndex,
+  activityViews,
+  activeViewToIndex,
   useWorkspace,
 } from './workspace/useWorkspace';
 
@@ -16,9 +16,9 @@ export default function () {
   return (
     <Allotment proportionalLayout={false}>
       <Allotment.Pane>
-        <HomeView visible={activityIndex == activeItemToIndex('home')} />
-        <RuntimeView visible={activityIndex === activeItemToIndex('play')} />
-        <DevView visible={activityIndex === activeItemToIndex('files')} />
+        <HomeView visible={activityIndex == activeViewToIndex('home')} />
+        <RuntimeView visible={activityIndex === activeViewToIndex('play')} />
+        <DevView visible={activityIndex === activeViewToIndex('files')} />
       </Allotment.Pane>
       <Allotment.Pane
         key="activityBar"
@@ -28,7 +28,7 @@ export default function () {
       >
         <ActivityBar
           checked={activityIndex}
-          items={activityItems}
+          items={activityViews}
           onClick={setActivityIndex}
         />
       </Allotment.Pane>

@@ -5,13 +5,12 @@ import { useIpcRendererListener } from '../../ipc';
 import { IpcEvents } from '../../../ipcEvents';
 
 export default function WebBrowsers(
-  { defaultURL, defaultTitle, jsCode, children },
+  { defaultURL, defaultTitle, children },
   ref
 ) {
   const context = useWebBrowsers({
     defaultURL,
     defaultTitle,
-    jsCode,
   });
   const tabs = [context.browserTabs, context.setBrowserTabs];
   const activeTab = [context.activeTabIndex, context.setActiveTabIndex];

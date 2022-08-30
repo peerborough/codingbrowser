@@ -1,74 +1,33 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useWorkspaceContext } from './useWorkspaceProvider';
 import { ipcRendererManager } from '../ipc';
 import { IpcEvents } from '../../ipcEvents';
 
-export { activityItems, activeItemToIndex } from './useWorkspaceProvider';
+export { activityViews, activeViewToIndex } from './useWorkspaceProvider';
 
 export function useWorkspace() {
   const {
-    rootPath,
-    mainScript,
-    preloadScript,
-    execution,
+    workspace,
+    scriptVersionId,
     activityIndex,
     setActivityIndex,
-    startWorkspace,
-    stopWorkspace,
+    setScriptVersionId,
   } = useWorkspaceContext();
 
-  const startAll = useCallback(async () => {
-    const main = await getMainScript(rootPath);
-    const preload = await getPreloadScript(rootPath);
-    startWorkspace(main, preload);
-  }, [rootPath]);
-
-  const stopAll = async () => {
-    stopWorkspace();
+  const restart = () => {
+    setScriptVersionId((id) => id + 1);
   };
 
-  const getMainScript = async (rootPath) => {
-    let main = await ipcRendererManager.invoke(
-      IpcEvents.LOAD_USER_FILE,
-      `${rootPath}main.js`
-    );
-
-    return main;
-  };
-
-  const getPreloadScript = async (rootPath) => {
-    let preload = await ipcRendererManager.invoke(
-      IpcEvents.LOAD_USER_FILE,
-      `${rootPath}preload.js`
-    );
-
-    if (preload !== null) {
-      preload = `${preload};${suffixScript}`;
-    }
-
-    return preload;
+  const enableWorkspace = (value) => {
+    ipcRendererManager.invoke(IpcEvents.ENABLE_WORKSPACE, workspace.id, value);
   };
 
   return {
-    mainScript,
-    preloadScript,
-    execution,
+    workspace,
+    scriptVersionId,
     activityIndex,
-    startAll,
-    stopAll,
+    restart,
+    enableWorkspace,
     setActivityIndex,
   };
 }
-
-const suffixScript = `
-if (document.readyState === "complete" 
-   || document.readyState === "loaded" 
-   || document.readyState === "interactive") {
-  if (onReady) onReady({url: window.location.href});
-}
-else {
-  window.addEventListener('DOMContentLoaded', (event) => {
-    if (onReady) onReady({url: window.location.href});
-  });  
-}
-`;

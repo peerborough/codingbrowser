@@ -9,7 +9,6 @@ export default function CodeEditor({ tabKey }) {
   const versionRef = useRef(-1);
   const [mounted, setMounted] = useState(false);
   const {
-    filepath,
     language,
     monacoOption,
     register,
@@ -70,7 +69,6 @@ export default function CodeEditor({ tabKey }) {
       <Editor
         width={width}
         height={height}
-        path={filepath}
         defaultLanguage={language}
         options={monacoOption}
         onMount={handleEditorDidMount}

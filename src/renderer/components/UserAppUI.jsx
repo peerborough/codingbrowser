@@ -5,23 +5,22 @@ import { useWorkspace } from '../workspace/useWorkspace';
 import useConsoleLog from '../workspace/useConsoleLog';
 
 export default function () {
-  const { mainScript } = useWorkspace();
-  const jsCodeRef = useRef(mainScript);
+  const { workspace, scriptVersionId } = useWorkspace();
   const [webview, setWebview] = useState();
+  const [attached, setAttached] = useState(false);
   const { addConsoleLog } = useConsoleLog();
+  const webviewRef = useCallback((node) => {
+    setWebview(node);
+  }, []);
 
   useEffect(() => {
-    jsCodeRef.current = mainScript;
-    if (mainScript !== null) {
+    if (workspace?.enabled && webview && attached) {
       webview?.reload();
     }
-  }, [mainScript]);
+  }, [scriptVersionId, workspace?.enabled, attached]);
 
   const handleIpcMessage = ({ frameId, channel, args }) => {
     switch (channel) {
-      case 'preload-ready':
-        handlePreloadReady(frameId);
-        break;
       case 'console-message':
         handleConsoleMessage(...args);
         break;
@@ -30,27 +29,17 @@ export default function () {
     }
   };
 
-  const handlePreloadReady = useCallback(
-    (frameId) => {
-      if (jsCodeRef.current) {
-        const _webview = webview;
-        setTimeout(() => {
-          _webview?.sendToFrame(frameId, 'execute-script', jsCodeRef.current);
-        }, 0);
-      }
-    },
-    [webview]
-  );
+  const handleDidAttach = () => {
+    setAttached(true);
+    //webview.openDevTools();
+  };
 
   function handleConsoleMessage(log) {
     addConsoleLog(Decode(log));
   }
 
-  const webviewRef = useCallback((node) => {
-    setWebview(node);
-  }, []);
-
   useEventListener(webview, 'ipc-message', handleIpcMessage);
+  useEventListener(webview, 'did-attach', handleDidAttach);
 
   return (
     <div style={{ width: '100%', height: '100%' }}>

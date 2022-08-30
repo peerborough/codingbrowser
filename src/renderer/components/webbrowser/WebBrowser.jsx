@@ -7,14 +7,16 @@ import { ipcRendererManager, useIpcRendererListener } from '../../ipc';
 import usePrevious from 'renderer/hooks/usePrevious';
 import { useWebBrowser } from './useWebBrowsers';
 import useConsoleLog from '../../workspace/useConsoleLog';
+import { useWorkspace } from '../../workspace/useWorkspace';
 
 export default function ({ tabId }) {
   const webviewRef = useRef();
-  const { isActiveTab, loading, jsCode, devTools, insertNewTab } =
-    useWebBrowser({ tabId });
-  const jsCodeRef = useRef(jsCode);
-  const prevJsCode = usePrevious(jsCode);
+  const { isActiveTab, loading, attached, devTools, insertNewTab } =
+    useWebBrowser({
+      tabId,
+    });
   const { addConsoleLog } = useConsoleLog();
+  const { workspace, scriptVersionId } = useWorkspace();
 
   const validateActiveTab = useCallback(
     (func) => {
@@ -51,15 +53,10 @@ export default function ({ tabId }) {
   }, [isActiveTab, loading]);
 
   useEffect(() => {
-    jsCodeRef.current = jsCode;
-  }, [jsCode]);
-
-  useEffect(() => {
-    if (isActiveTab && prevJsCode !== undefined && jsCode) {
-      console.log('force reload');
+    if (workspace?.enabled && isActiveTab && attached) {
       webviewRef.current?.reload();
     }
-  }, [jsCode, isActiveTab]);
+  }, [scriptVersionId, workspace?.enabled, attached]);
 
   useEffect(() => {
     (async function () {
@@ -80,9 +77,6 @@ export default function ({ tabId }) {
 
   const handleIpcMessage = ({ frameId, channel, args }) => {
     switch (channel) {
-      case 'preload-ready':
-        handlePreloadReady(frameId);
-        break;
       case 'console-message':
         handleConsoleMessage(...args);
         break;
@@ -93,18 +87,6 @@ export default function ({ tabId }) {
         console.error('Invalid channel', channel);
     }
   };
-
-  function handlePreloadReady(frameId) {
-    if (jsCodeRef.current) {
-      setTimeout(() => {
-        webviewRef.current?.sendToFrame(
-          frameId,
-          'execute-script',
-          jsCodeRef.current
-        );
-      }, 0);
-    }
-  }
 
   function handleConsoleMessage(log) {
     addConsoleLog(Decode(log));

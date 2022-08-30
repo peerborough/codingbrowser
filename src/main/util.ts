@@ -1,6 +1,7 @@
 /* eslint import/prefer-default-export: off */
 import { URL } from 'url';
 import path from 'path';
+import fs from 'fs';
 
 export function resolveHtmlPath(htmlFileName: string) {
   if (process.env.NODE_ENV === 'development') {
@@ -20,4 +21,20 @@ export function isDebug(): boolean {
 
 export function isProduction(): boolean {
   return process.env.NODE_ENV === 'production';
+}
+
+export function loadTextFile(filePath: string): string {
+  return fs.readFileSync(filePath, 'utf8');
+}
+
+export function saveTextFile(filePath: string, content: string): void {
+  fs.writeFileSync(filePath, content);
+}
+
+export function getFileNameFromPath(filePath: string) {
+  return path.parse(filePath).base;
+}
+
+export function getRelativePath(from: string, to: string) {
+  return path.relative(from, to);
 }

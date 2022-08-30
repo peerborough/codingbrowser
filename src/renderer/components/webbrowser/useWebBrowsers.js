@@ -11,7 +11,7 @@ export const [WebBrowsersProvider, useWebBrowsersContext] = createContext({
   name: 'WebBrowsersContext',
 });
 
-export function useWebBrowsers({ defaultURL, defaultTitle, jsCode }) {
+export function useWebBrowsers({ defaultURL, defaultTitle }) {
   const [browserTabs, setBrowserTabs] = useState([]);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [devTools, setDevTools] = useState(false);
@@ -31,6 +31,7 @@ export function useWebBrowsers({ defaultURL, defaultTitle, jsCode }) {
       loading: false,
       canGoBack: false,
       canGoForward: false,
+      attached: false,
       content: (props) => <WebBrowser tabId={tabId} />,
     };
   };
@@ -48,7 +49,7 @@ export function useWebBrowsers({ defaultURL, defaultTitle, jsCode }) {
 
   const updateTab = (
     tabId,
-    { title, url, loading, canGoBack, canGoForward }
+    { title, url, loading, canGoBack, canGoForward, attached }
   ) => {
     setBrowserTabs((tabs) => {
       return tabs.map((tab) =>
@@ -60,6 +61,7 @@ export function useWebBrowsers({ defaultURL, defaultTitle, jsCode }) {
               loading: getValue(loading, tab.loading),
               canGoBack: getValue(canGoBack, tab.canGoBack),
               canGoForward: getValue(canGoForward, tab.canGoForward),
+              attached: getValue(attached, tab.attached),
             }
           : tab
       );
@@ -78,7 +80,6 @@ export function useWebBrowsers({ defaultURL, defaultTitle, jsCode }) {
     activeTabIndex,
     defaultURL,
     defaultTitle,
-    jsCode,
     devTools,
     insertNewTab,
     pushNewTab,
@@ -103,14 +104,14 @@ export function useAddressBar({ tabId }) {
 }
 
 export function useWebBrowser({ tabId }) {
-  const { browserTabs, activeTabIndex, jsCode, devTools, insertNewTab } =
+  const { browserTabs, activeTabIndex, devTools, insertNewTab } =
     useWebBrowsersContext();
   const isActiveTab = browserTabs[activeTabIndex]?.id === tabId;
   const browserTab = browserTabs.find((tab) => tab.id === tabId);
   return {
     isActiveTab,
     loading: getValue(browserTab?.loading, false),
-    jsCode,
+    attached: getValue(browserTab?.attached, false),
     devTools,
     insertNewTab,
   };
