@@ -7,6 +7,7 @@ import './App.css';
 import 'allotment/dist/style.css';
 import 'antd/dist/antd.css';
 import 'react-chatbot-kit/build/main.css';
+import '@vscode/codicons/dist/codicon.css';
 
 loader.config({ monaco });
 
