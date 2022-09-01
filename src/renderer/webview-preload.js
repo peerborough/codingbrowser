@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import { Hook } from 'console-feed';
 import { IpcEvents } from '../ipcEvents';
-import * as injectorAPI from '../api/injector';
+import * as injectAPI from '../api/inject';
 
 window._codingbrowser_console = { ...window.console };
 
@@ -35,14 +35,14 @@ async function getCurrentWorkspace() {
 getCurrentWorkspace().then((workspace) => {
   if (!workspace || !workspace.enabled) return;
 
-  const script = fs.readFileSync(workspace.injectorPath, 'utf8');
+  const script = fs.readFileSync(workspace.injectPath, 'utf8');
   if (script) {
     var F = new Function(
       'console',
       'codingbrowser',
       `${script};${suffixScript}`
     );
-    F(window._codingbrowser_console, injectorAPI);
+    F(window._codingbrowser_console, injectAPI);
   }
 });
 
