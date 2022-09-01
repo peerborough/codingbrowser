@@ -31,7 +31,7 @@ export function createWorkspace() {
   createWorkspaceDirectories(id);
   const file = createProjectFiles(projectPath);
   const openFiles = [
-    getFileInfo(projectPath, file.preloadJsPath),
+    getFileInfo(projectPath, file.injectorJsPath),
     getFileInfo(projectPath, file.mainJsPath),
   ];
 
@@ -41,7 +41,7 @@ export function createWorkspace() {
     projectPath: projectPath,
     openFiles: openFiles,
     mainPath: file.mainJsPath,
-    preloadPath: file.preloadJsPath,
+    injectorPath: file.injectorJsPath,
   });
 
   return id;
@@ -83,12 +83,12 @@ function createProjectFiles(projectPath) {
     fs.writeFileSync(mainJsPath, mainjs);
   }
 
-  const preloadJsPath = path.join(projectPath, 'preload.js');
-  if (!fs.existsSync(preloadJsPath)) {
-    fs.writeFileSync(preloadJsPath, preloadjs);
+  const injectorJsPath = path.join(projectPath, 'injector.js');
+  if (!fs.existsSync(injectorJsPath)) {
+    fs.writeFileSync(injectorJsPath, injectorjs);
   }
 
-  return { preloadJsPath, mainJsPath };
+  return { injectorJsPath, mainJsPath };
 }
 
 function createDirectory(path) {
@@ -120,7 +120,7 @@ const { output }  = window.codingbrowser;
 
 `;
 
-const preloadjs = `/**
+const injectorjs = `/**
  *
  *  A script that will be injected into every frame
  *
