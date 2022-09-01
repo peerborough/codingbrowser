@@ -1,4 +1,3 @@
-import '@vscode/codicons/dist/codicon.css';
 import classNames from 'classnames';
 import styles from './ActivityBar.module.css';
 
