@@ -122,11 +122,11 @@ const { output }  = window.codingbrowser;
 
 const injectjs = `/**
  *
- *  A script that will be injected into every frame
+ *  A script that is injected into every frame on webpage
  *
  */
 
-// Called whenever DOM content for each frame has been loaded
+// Called when DOM content for each frame is loaded
 function onReady({ url }) {
   console.log(\`onReady( "\${ url }" )\`);
 
