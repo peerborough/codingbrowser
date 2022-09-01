@@ -1,6 +1,7 @@
 import { useWorkspaceContext } from './useWorkspace';
 
 export default function () {
-  const { consoleLogs, addConsoleLog } = useWorkspaceContext();
-  return { consoleLogs, addConsoleLog };
+  const { consoleLogs, addConsoleLog, clearAllConsoleLog } =
+    useWorkspaceContext();
+  return { consoleLogs, addConsoleLog, clearAllConsoleLog };
 }

@@ -1,10 +1,20 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import { Console } from 'console-feed';
 import useConsoleLog from '../workspace/useConsoleLog';
 
-export default function DebugConsole({ defaultScript }, ref) {
-  const { consoleLogs } = useConsoleLog();
+function DebugConsole({ defaultScript }, ref) {
+  const { consoleLogs, clearAllConsoleLog } = useConsoleLog();
   const messagesEndRef = useRef(null);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      clearAll: () => {
+        clearAllConsoleLog();
+      },
+    }),
+    []
+  );
 
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -21,3 +31,5 @@ export default function DebugConsole({ defaultScript }, ref) {
     </div>
   );
 }
+
+export default forwardRef(DebugConsole);

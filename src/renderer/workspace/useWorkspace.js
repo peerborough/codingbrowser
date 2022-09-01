@@ -47,6 +47,10 @@ export function useWorkspaceProvider() {
     setConsoleLogs((logs) => [...logs, log]);
   };
 
+  const clearAllConsoleLog = () => {
+    setConsoleLogs([]);
+  };
+
   return {
     workspace,
     scriptVersionId,
@@ -56,6 +60,7 @@ export function useWorkspaceProvider() {
     restart,
     enableWorkspace,
     addConsoleLog,
+    clearAllConsoleLog,
     setActivityIndex,
   };
 }
