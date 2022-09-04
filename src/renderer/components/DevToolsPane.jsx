@@ -22,7 +22,7 @@ export default function () {
             type="text"
             shape="default"
             size="small"
-            icon={<div class="codicon codicon-clear-all"></div>}
+            icon={<div className="codicon codicon-clear-all"></div>}
             onClick={handleClearAll}
           />
         }
