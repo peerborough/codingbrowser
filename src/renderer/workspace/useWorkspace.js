@@ -7,7 +7,7 @@ export const [WorkspaceProvider, useWorkspaceContext] = createContext({
   name: 'WorkspaceContext',
 });
 
-export const activityViews = ['play', 'files'];
+export const activityViews = ['files'];
 export const activeViewToIndex = (name) => activityViews.indexOf(name);
 
 export function useWorkspaceProvider() {
