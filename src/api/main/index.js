@@ -1,1 +1,2 @@
-export * as bot from './bot';
+export * as browser from './browser';
+export * as workspace from './workspace';

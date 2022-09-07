@@ -43,6 +43,15 @@ export function useWorkspaceProvider() {
     ipcRendererManager.invoke(IpcEvents.ENABLE_WORKSPACE, workspace.id, value);
   };
 
+  const setWorkspaceValue = (key, value) => {
+    ipcRendererManager.invoke(
+      IpcEvents.SET_WORKSPACE_VALUE,
+      workspace.id,
+      key,
+      value
+    );
+  };
+
   const addConsoleLog = (log) => {
     setConsoleLogs((logs) => [...logs, log]);
   };
@@ -59,6 +68,7 @@ export function useWorkspaceProvider() {
     setScriptVersionId,
     restart,
     enableWorkspace,
+    setWorkspaceValue,
     addConsoleLog,
     clearAllConsoleLog,
     setActivityIndex,

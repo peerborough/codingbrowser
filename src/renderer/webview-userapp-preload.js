@@ -23,7 +23,10 @@ getCurrentWorkspace().then((workspace) => {
 
   const script = fs.readFileSync(workspace.mainPath, 'utf8');
   if (script) {
+    mainAPI.workspace.setWorkspaceId(workspace.id);
     var F = new Function('console', 'codingbrowser', script);
-    F(window._codingbrowser_console, mainAPI);
+    F(window._codingbrowser_console, {
+      browser: mainAPI.browser,
+    });
   }
 });
