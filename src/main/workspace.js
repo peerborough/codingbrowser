@@ -62,6 +62,11 @@ export function enableWorkspace(workspaceId, value) {
   setStoreValue(`workspace.${workspaceId}.enabled`, value);
 }
 
+export function setWorkspaceValue(workspaceId, key, value) {
+  if (!workspaceId) return;
+  setStoreValue(`workspace.${workspaceId}.${key}`, value);
+}
+
 function createId() {
   return `u${uuidv4().replaceAll('-', '')}`;
 }
@@ -116,7 +121,6 @@ const mainjs = `/**
  *
  */
 
-const { output }  = window.codingbrowser;
 
 `;
 

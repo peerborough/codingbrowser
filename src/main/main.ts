@@ -20,8 +20,8 @@ import {
   initializeWorkspace,
   getCurrentWorkspace,
   enableWorkspace,
+  setWorkspaceValue,
 } from './workspace';
-import { getStoreValue, setStoreValue } from './store';
 import { loadTextFile, saveTextFile } from './util';
 
 // class AppUpdater {
@@ -88,6 +88,13 @@ function setupWorkspaceHandler() {
     IpcEvents.ENABLE_WORKSPACE,
     async (_, workspaceId, value) => {
       return enableWorkspace(workspaceId, value);
+    }
+  );
+
+  ipcMainManager.handle(
+    IpcEvents.SET_WORKSPACE_VALUE,
+    async (_, workspaceId, key, value) => {
+      return setWorkspaceValue(workspaceId, key, value);
     }
   );
 }
