@@ -4,7 +4,7 @@ const botName = 'CodingBrowser';
 
 const config = {
   initialMessages: [
-    createChatBotMessage(`The application has been started 🙂`),
+    createChatBotMessage(`Start a blank application. See the source code. 🙂`),
   ],
   botName: botName,
   customComponents: {
