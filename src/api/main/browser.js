@@ -1,14 +1,17 @@
+import path from 'path';
 import { ipcRenderer } from 'electron';
 import { IpcEvents } from '../../ipcEvents';
-import { getWorkspaceId } from './workspace';
+import { getWorkspaceId, getProjectPath } from './workspace';
 
 export function initialize({ browserScriptPath }) {
-  if (!getWorkspaceId()) return;
+  if (!getWorkspaceId() || !getProjectPath() || !browserScriptPath) return;
+
+  const fullPath = path.join(getProjectPath(), browserScriptPath);
 
   ipcRenderer.invoke(
     IpcEvents.SET_WORKSPACE_VALUE,
     getWorkspaceId(),
-    'injectPath',
-    browserScriptPath
+    'browserScriptPath',
+    fullPath
   );
 }

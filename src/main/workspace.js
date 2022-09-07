@@ -15,6 +15,7 @@ import { getFileNameFromPath, getRelativePath } from './util';
 const userDataPath = app.getPath('userData');
 
 export function initializeWorkspace() {
+  //deleteStoreKey('workspace'); // DEBUGGING
   if (!getStoreValue('workspace')) {
     setStoreValue('workspace', {});
     const id = createWorkspace();
@@ -26,22 +27,24 @@ export function initializeWorkspace() {
 
 export function createWorkspace() {
   const id = createId();
-  const projectPath = path.join(userDataPath, 'workspaces', id, 'project');
+  const workspacePath = path.join(userDataPath, 'workspaces', id);
+  const projectPath = path.join(workspacePath, 'project');
 
   createWorkspaceDirectories(id);
   const file = createProjectFiles(projectPath);
   const openFiles = [
-    getFileInfo(projectPath, file.injectJsPath),
     getFileInfo(projectPath, file.mainJsPath),
+    getFileInfo(projectPath, file.browserScriptPath),
   ];
 
   setStoreValue(`workspace.${id}`, {
     id: id,
     enabled: true,
+    workspacePath: workspacePath,
     projectPath: projectPath,
     openFiles: openFiles,
     mainPath: file.mainJsPath,
-    injectPath: file.injectJsPath,
+    browserScriptPath: file.browserScriptPath,
   });
 
   return id;
@@ -88,12 +91,12 @@ function createProjectFiles(projectPath) {
     fs.writeFileSync(mainJsPath, mainjs);
   }
 
-  const injectJsPath = path.join(projectPath, 'inject.js');
-  if (!fs.existsSync(injectJsPath)) {
-    fs.writeFileSync(injectJsPath, injectjs);
+  const browserScriptPath = path.join(projectPath, 'browser.js');
+  if (!fs.existsSync(browserScriptPath)) {
+    fs.writeFileSync(browserScriptPath, injectjs);
   }
 
-  return { injectJsPath, mainJsPath };
+  return { browserScriptPath, mainJsPath };
 }
 
 function createDirectory(path) {
@@ -116,19 +119,21 @@ function notifyWorkspaceChange(newValue, oldValue) {
 }
 
 const mainjs = `/**
- *
- *  A script for the main application
- *
- */
+*
+*  Main application
+*
+*/
 
+const { browser } = codingbrowser;
 
+browser.initialize({ browserScriptPath: 'browser.js' })
 `;
 
 const injectjs = `/**
- *
- *  A script that is injected into every frame on webpage
- *
- */
+*
+*  A script that is injected into every frame on webpage
+*
+*/
 
 // Called when DOM content for each frame is loaded
 function onReady({ url }) {

@@ -24,6 +24,8 @@ getCurrentWorkspace().then((workspace) => {
   const script = fs.readFileSync(workspace.mainPath, 'utf8');
   if (script) {
     mainAPI.workspace.setWorkspaceId(workspace.id);
+    mainAPI.workspace.setProjectPath(workspace.projectPath);
+
     var F = new Function('console', 'codingbrowser', script);
     F(window._codingbrowser_console, {
       browser: mainAPI.browser,
