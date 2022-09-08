@@ -170,11 +170,11 @@ function getFileMenu(): MenuItemConstructorOptions {
       },
       accelerator: 'CmdOrCtrl+T',
     },
-    {
-      label: 'New Window',
-      click: () => createMainWindow(),
-      accelerator: 'CmdOrCtrl+Shift+N',
-    },
+    // {
+    //   label: 'New Window',
+    //   click: () => createMainWindow(),
+    //   accelerator: 'CmdOrCtrl+Shift+N',
+    // },
     { type: 'separator' },
     {
       label: 'Save',
