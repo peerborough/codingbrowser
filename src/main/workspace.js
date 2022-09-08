@@ -1,11 +1,11 @@
 import { app } from 'electron';
 import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import {
   getStoreValue,
   setStoreValue,
-  deleteStoreKey,
+  deleteStoreValue,
   subscribeKey,
 } from './store';
 import { IpcEvents } from '../ipcEvents';
@@ -15,7 +15,7 @@ import { getFileNameFromPath, getRelativePath } from './util';
 const userDataPath = app.getPath('userData');
 
 export function initializeWorkspace() {
-  //deleteStoreKey('workspace'); // DEBUGGING
+  //deleteStoreValue('workspace'); // DEBUGGING
   if (!getStoreValue('workspace')) {
     setStoreValue('workspace', {});
     const id = createWorkspace();
@@ -50,14 +50,53 @@ export function createWorkspace() {
   return id;
 }
 
-export function getCurrentWorkspace() {
-  const workspaceId = getStoreValue('workspace.current');
+export function newWorkspace() {
+  const oldWorkspaceId = getCurrentWorkspaceId();
+
+  const newWorkspaceId = createWorkspace();
+  if (getWorkspace(newWorkspaceId)) {
+    setCurrentWorkspaceId(newWorkspaceId);
+  }
+  setTimeout(() => {
+    deleteWorkspace(oldWorkspaceId);
+  }, 0);
+}
+
+export function deleteWorkspace(id) {
+  if (!id) return;
+
+  const currentWorkspaceId = getCurrentWorkspaceId();
+  if (currentWorkspaceId === id) {
+    setStoreValue(`workspace.current`, null);
+  }
+  deleteStoreValue(`workspace.${id}`);
+  setTimeout(() => {
+    deleteWorkspaceDirectories(id);
+  }, 1000);
+}
+
+export function getWorkspace(workspaceId) {
   if (!workspaceId) return null;
 
   const workspace = getStoreValue(`workspace.${workspaceId}`);
   if (!workspace) return null;
 
   return workspace;
+}
+
+export function getCurrentWorkspace() {
+  const workspaceId = getCurrentWorkspaceId();
+  return getWorkspace(workspaceId);
+}
+
+export function getCurrentWorkspaceId() {
+  const workspaceId = getStoreValue('workspace.current');
+  return workspaceId || null;
+}
+
+export function setCurrentWorkspaceId(id) {
+  if (!id) return;
+  setStoreValue('workspace.current', id);
 }
 
 export function enableWorkspace(workspaceId, value) {
@@ -83,6 +122,13 @@ function createWorkspaceDirectories(workspaceId) {
 
   const project = path.join(home, 'project');
   createDirectory(project);
+}
+
+function deleteWorkspaceDirectories(workspaceId) {
+  if (!workspaceId) return;
+
+  const home = path.join(userDataPath, 'workspaces', workspaceId);
+  fs.remove(home).catch((err) => console.error(err));
 }
 
 function createProjectFiles(projectPath) {
@@ -115,7 +161,11 @@ function getFileInfo(projectPath, localPath, remotePath) {
 }
 
 function notifyWorkspaceChange(newValue, oldValue) {
-  ipcMainManager.send(IpcEvents.WORKSPACE_CHANGED, [newValue]);
+  if (oldValue['current'] !== newValue['current']) {
+    ipcMainManager.send(IpcEvents.WORKSPACE_SWITCH, [newValue]);
+  } else {
+    ipcMainManager.send(IpcEvents.WORKSPACE_CHANGE, [newValue]);
+  }
 }
 
 const mainjs = `/**

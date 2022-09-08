@@ -10,7 +10,7 @@ export function setStoreValue(key, value) {
   store.set(key, value);
 }
 
-export function deleteStoreKey(key) {
+export function deleteStoreValue(key) {
   store.delete(key);
 }
 

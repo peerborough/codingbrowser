@@ -1,7 +1,23 @@
 import { useState, useMemo, useEffect } from 'react';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Modal } from 'antd';
 import { createContext } from '../hooks/context';
 import { ipcRendererManager, useIpcRendererListener } from '../ipc';
 import { IpcEvents } from '../../ipcEvents';
+
+const { confirm } = Modal;
+
+const showNewWorkspaceConfirm = () => {
+  confirm({
+    title: 'Do you want to create a new workspace?',
+    icon: <ExclamationCircleOutlined />,
+    content: 'Your changes will be lost.',
+    onOk() {
+      ipcRendererManager.invoke(IpcEvents.NEW_WORKSPACE);
+    },
+    onCancel() {},
+  });
+};
 
 export const [WorkspaceProvider, useWorkspaceContext] = createContext({
   name: 'WorkspaceContext',
@@ -23,10 +39,21 @@ export function useWorkspaceProvider() {
     })();
   }, []);
 
-  useIpcRendererListener(IpcEvents.WORKSPACE_CHANGED, (newValue) => {
+  useIpcRendererListener(IpcEvents.WORKSPACE_CHANGE, (newValue) => {
     if (workspace && newValue[workspace.id]) {
       setWorkspace(newValue[workspace.id]);
     }
+  });
+
+  useIpcRendererListener(IpcEvents.WORKSPACE_SWITCH, (newValue) => {
+    const currentWorkspaceId = newValue['current'];
+    if (currentWorkspaceId) {
+      setWorkspace(newValue[currentWorkspaceId]);
+    }
+  });
+
+  useIpcRendererListener(IpcEvents.NEW_WORKSPACE_CONFIRM, () => {
+    showNewWorkspaceConfirm();
   });
 
   const [scriptVersionId, setScriptVersionId] = useState(1);

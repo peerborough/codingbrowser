@@ -153,12 +153,18 @@ function getDebugMenu(): MenuItemConstructorOptions {
 function getFileMenu(): MenuItemConstructorOptions {
   const fileMenu: Array<MenuItemConstructorOptions> = [
     {
-      label: 'New Code',
-      accelerator: 'CmdOrCtrl+N',
-      enabled: false,
+      label: 'New Workspace',
+      click: () => {
+        return ipcMainManager.send(IpcEvents.NEW_WORKSPACE_CONFIRM);
+      },
     },
+    // {
+    //   label: 'New Code',
+    //   accelerator: 'CmdOrCtrl+N',
+    //   enabled: false,
+    // },
     {
-      label: 'New Browser Tab',
+      label: 'New Tab',
       click: () => {
         return ipcMainManager.send(IpcEvents.NEW_BROWSER_TAB);
       },

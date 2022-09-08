@@ -18,6 +18,7 @@ import { setupDevTools } from './devtools';
 import { getOrCreateMainWindow } from './windows';
 import {
   initializeWorkspace,
+  newWorkspace,
   getCurrentWorkspace,
   enableWorkspace,
   setWorkspaceValue,
@@ -80,6 +81,11 @@ function setupWorkspaceHandler() {
       saveTextFile(filePath, value);
     }
   );
+
+  ipcMainManager.handle(IpcEvents.NEW_WORKSPACE, async (_) => {
+    newWorkspace();
+  });
+
   ipcMainManager.handle(IpcEvents.GET_CURRENT_WORKSPACE, async (_) => {
     return getCurrentWorkspace();
   });
