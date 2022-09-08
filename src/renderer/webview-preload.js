@@ -46,12 +46,10 @@ getCurrentWorkspace()
     const script = fs.readFileSync(workspace.browserScriptPath, 'utf8');
     if (script) {
       try {
-        var F = new Function(
-          'console',
-          'codingbrowser',
-          `${script};${suffixScript}`
-        );
-        F(window._codingbrowser_console, browserAPI);
+        var F = new Function('console', 'codingbrowser', script);
+        F(window._codingbrowser_console, {
+          events: browserAPI.events,
+        });
       } catch (error) {
         const filename = path.basename(workspace.browserScriptPath);
         window._codingbrowser_console.error(filename, error);
@@ -61,16 +59,3 @@ getCurrentWorkspace()
   .catch((error) => {
     window._codingbrowser_console.error(sourceFileName, error);
   });
-
-const suffixScript = `
-if (document.readyState === "complete" 
-   || document.readyState === "loaded" 
-   || document.readyState === "interactive") {
-  if (onReady) onReady({url: window.location.href});
-}
-else {
-  window.addEventListener('DOMContentLoaded', (event) => {
-    if (onReady) onReady({url: window.location.href});
-  });  
-}
-`;

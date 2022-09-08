@@ -1,1 +1,1 @@
-export * from './dummy';
+export * as events from './events';

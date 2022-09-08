@@ -139,7 +139,7 @@ function createProjectFiles(projectPath) {
 
   const browserScriptPath = path.join(projectPath, 'browser.js');
   if (!fs.existsSync(browserScriptPath)) {
-    fs.writeFileSync(browserScriptPath, injectjs);
+    fs.writeFileSync(browserScriptPath, browserjs);
   }
 
   return { browserScriptPath, mainJsPath };
@@ -179,15 +179,16 @@ const { browser } = codingbrowser;
 browser.initialize({ browserScriptPath: 'browser.js' })
 `;
 
-const injectjs = `/**
+const browserjs = `/**
 *
 *  A script that is injected into every frame on webpage
 *
 */
 
-// Called when DOM content for each frame is loaded
-function onReady({ url }) {
-  console.log(\`onReady( "\${ url }" )\`);
+const { events } = codingbrowser;
 
-}
+// Called when DOM content for each frame is loaded
+events.on('ready', () => {
+  console.log('ready');
+});
 `;
