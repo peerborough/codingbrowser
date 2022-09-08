@@ -33,7 +33,7 @@ export function createWorkspace() {
   createWorkspaceDirectories(id);
   const file = createProjectFiles(projectPath);
   const openFiles = [
-    getFileInfo(projectPath, file.mainJsPath),
+    getFileInfo(projectPath, file.mainScriptPath),
     getFileInfo(projectPath, file.browserScriptPath),
   ];
 
@@ -43,7 +43,7 @@ export function createWorkspace() {
     workspacePath: workspacePath,
     projectPath: projectPath,
     openFiles: openFiles,
-    mainPath: file.mainJsPath,
+    mainScriptPath: file.mainScriptPath,
     browserScriptPath: file.browserScriptPath,
   });
 
@@ -132,9 +132,9 @@ function deleteWorkspaceDirectories(workspaceId) {
 }
 
 function createProjectFiles(projectPath) {
-  const mainJsPath = path.join(projectPath, 'main.js');
-  if (!fs.existsSync(mainJsPath)) {
-    fs.writeFileSync(mainJsPath, mainjs);
+  const mainScriptPath = path.join(projectPath, 'main.js');
+  if (!fs.existsSync(mainScriptPath)) {
+    fs.writeFileSync(mainScriptPath, mainjs);
   }
 
   const browserScriptPath = path.join(projectPath, 'browser.js');
@@ -142,7 +142,7 @@ function createProjectFiles(projectPath) {
     fs.writeFileSync(browserScriptPath, browserjs);
   }
 
-  return { browserScriptPath, mainJsPath };
+  return { browserScriptPath, mainScriptPath };
 }
 
 function createDirectory(path) {

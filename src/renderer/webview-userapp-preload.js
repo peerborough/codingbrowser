@@ -29,7 +29,7 @@ getCurrentWorkspace()
   .then((workspace) => {
     if (!workspace || !workspace.enabled) return null;
 
-    const script = fs.readFileSync(workspace.mainPath, 'utf8');
+    const script = fs.readFileSync(workspace.mainScriptPath, 'utf8');
     if (script) {
       try {
         mainAPI.workspace.setWorkspaceId(workspace.id);
@@ -40,7 +40,7 @@ getCurrentWorkspace()
           browser: mainAPI.browser,
         });
       } catch (error) {
-        const filename = path.basename(workspace.mainPath);
+        const filename = path.basename(workspace.mainScriptPath);
         window._codingbrowser_console.error(filename, error);
       }
     }
