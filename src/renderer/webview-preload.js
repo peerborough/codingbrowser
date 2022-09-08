@@ -1,8 +1,11 @@
 import { ipcRenderer } from 'electron';
 import fs from 'fs';
+import path from 'path';
 import { Hook } from 'console-feed';
 import { IpcEvents } from '../ipcEvents';
 import * as browserAPI from '../api/browser';
+
+const sourceFileName = 'webview-preload.js';
 
 window._codingbrowser_console = { ...window.console };
 
@@ -13,6 +16,10 @@ Hook(
   },
   true
 );
+
+window.addEventListener('error', (error) => {
+  window._codingbrowser_console.error(sourceFileName, error);
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('click', (e) => {
@@ -32,19 +39,28 @@ async function getCurrentWorkspace() {
   return await ipcRenderer.invoke(IpcEvents.GET_CURRENT_WORKSPACE);
 }
 
-getCurrentWorkspace().then((workspace) => {
-  if (!workspace || !workspace.enabled) return;
+getCurrentWorkspace()
+  .then((workspace) => {
+    if (!workspace || !workspace.enabled) return;
 
-  const script = fs.readFileSync(workspace.browserScriptPath, 'utf8');
-  if (script) {
-    var F = new Function(
-      'console',
-      'codingbrowser',
-      `${script};${suffixScript}`
-    );
-    F(window._codingbrowser_console, browserAPI);
-  }
-});
+    const script = fs.readFileSync(workspace.browserScriptPath, 'utf8');
+    if (script) {
+      try {
+        var F = new Function(
+          'console',
+          'codingbrowser',
+          `${script};${suffixScript}`
+        );
+        F(window._codingbrowser_console, browserAPI);
+      } catch (error) {
+        const filename = path.basename(workspace.browserScriptPath);
+        window._codingbrowser_console.error(filename, error);
+      }
+    }
+  })
+  .catch((error) => {
+    window._codingbrowser_console.error(sourceFileName, error);
+  });
 
 const suffixScript = `
 if (document.readyState === "complete" 
