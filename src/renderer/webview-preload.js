@@ -49,6 +49,7 @@ getCurrentWorkspace()
         var F = new Function('console', 'codingbrowser', script);
         F(window._codingbrowser_console, {
           events: browserAPI.events,
+          content: browserAPI.content,
         });
       } catch (error) {
         const filename = path.basename(workspace.browserScriptPath);
