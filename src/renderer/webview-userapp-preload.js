@@ -32,13 +32,12 @@ getCurrentWorkspace()
     const script = fs.readFileSync(workspace.mainScriptPath, 'utf8');
     if (script) {
       try {
-        mainAPI.workspace.setWorkspaceId(workspace.id);
-        mainAPI.workspace.setProjectPath(workspace.projectPath);
+        const { internal, ...api } = mainAPI;
+        internal.workspace.setWorkspaceId(workspace.id);
+        internal.workspace.setProjectPath(workspace.projectPath);
 
         var F = new Function('console', 'codingbrowser', script);
-        F(window._codingbrowser_console, {
-          browser: mainAPI.browser,
-        });
+        F(window._codingbrowser_console, { ...api });
       } catch (error) {
         const filename = path.basename(workspace.mainScriptPath);
         window._codingbrowser_console.error(filename, error);

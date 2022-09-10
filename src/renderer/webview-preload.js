@@ -46,11 +46,10 @@ getCurrentWorkspace()
     const script = fs.readFileSync(workspace.browserScriptPath, 'utf8');
     if (script) {
       try {
+        const { internal, ...api } = browserAPI;
+
         var F = new Function('console', 'codingbrowser', script);
-        F(window._codingbrowser_console, {
-          events: browserAPI.events,
-          content: browserAPI.content,
-        });
+        F(window._codingbrowser_console, { ...api });
       } catch (error) {
         const filename = path.basename(workspace.browserScriptPath);
         window._codingbrowser_console.error(filename, error);
