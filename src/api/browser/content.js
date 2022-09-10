@@ -1,6 +1,6 @@
 export function replaceText(from, to) {
   if (typeof from !== 'string' || typeof to !== 'string') return;
-  const search = escapeXpathString(from);
+  const search = escapeSingleQuotationByConcat(from);
   if (!search) return;
 
   const xpath = `//*[contains(text(),${search})]`;
@@ -20,7 +20,47 @@ export function replaceText(from, to) {
   }
 }
 
-function escapeXpathString(str) {
+export function findElementByText(text) {
+  if (typeof text !== 'string') return;
+  const escapedText = escapeSingleQuotationByConcat(text);
+  if (!escapedText) return;
+
+  const xpath = `//*[normalize-space(text())=${escapedText}]`;
+  const result = document.evaluate(
+    xpath,
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null
+  );
+
+  return result?.singleNodeValue || null;
+}
+
+export function findElementsByTextAll(text) {
+  if (typeof text !== 'string') return;
+  const escapedText = escapeSingleQuotationByConcat(text);
+  if (!escapedText) return;
+
+  const xpath = `//*[normalize-space(text())=${escapedText}]`;
+  const result = document.evaluate(
+    xpath,
+    document,
+    null,
+    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+    null
+  );
+
+  const returnValue = [];
+  for (let i = 0; i < result.snapshotLength; i++) {
+    const node = result.snapshotItem(i);
+    returnValue.push(node);
+  }
+
+  return returnValue;
+}
+
+function escapeSingleQuotationByConcat(str) {
   if (!str) return null;
 
   const sentences = str.split(/(')/g);
