@@ -113,6 +113,7 @@ function WebView({ tabId, onIpcMessage }, ref) {
     <webview
       ref={webviewRef}
       src={defaultURL}
+      partition="persist:codingbrowser"
       allowpopups="true"
       nodeintegrationinsubframes="true"
       webpreferences="nativeWindowOpen=yes"

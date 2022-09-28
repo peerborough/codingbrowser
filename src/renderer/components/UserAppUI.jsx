@@ -43,6 +43,7 @@ export default function () {
       <webview
         ref={webviewRef}
         src="data:text/html,<html><body>User APP</body></html>"
+        partition="persist:codingbrowser"
         style={{ width: '100%', height: '100%' }}
         preload={`file://${window._codingbrowser.getWebviewUserAppPreloadPath()}`}
       ></webview>

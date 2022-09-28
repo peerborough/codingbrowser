@@ -113,7 +113,12 @@ export default function ({ tabId }) {
         onReload={handleReload}
         onStop={handleStop}
       />
-      <WebView ref={webviewRef} tabId={tabId} onIpcMessage={handleIpcMessage} />
+      <WebView
+        ref={webviewRef}
+        tabId={tabId}
+        onIpcMessage={handleIpcMessage}
+        partition="persist:codingbrowser"
+      />
     </div>
   );
 }
